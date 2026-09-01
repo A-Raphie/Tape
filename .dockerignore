@@ -1,0 +1,15 @@
+.git
+.venv
+node_modules
+.next
+out
+archive
+panel-api.log
+desk.log
+.env
+.env.dev
+.env.local
+agent/.env
+agent/.env.dev
+smoke.db
+.DS_Store
