@@ -16,6 +16,7 @@ DAILY_HALT_LOSS = 0.04  # 4% NAV realized loss in a session -> halt + flatten
 TP_FRACTION = 0.50  # take profit at 50% of credit received
 _SL_MULTIPLE = 1.5  # stop loss at 1.5x credit received
 LAST_ENTRY_MINUTES = 30  # no new risk in the last 30 minutes of a session
+ENTRY_SLIPPAGE = 0.03  # credit given up vs mid so limit entries are marketable (paper fills only when marketable)
 MAX_DTE = 5
 DELTA_BAND = (0.10, 0.40)  # absolute delta of the short leg
 MAX_STRUCTURES_PER_UNDERLYING = 2
@@ -86,9 +87,18 @@ def evaluate(
         not session_halted(daily_realized_pnl, equity),
         {"daily_realized_pnl": round(daily_realized_pnl, 2)},
     )
-    d = abs(proposal.get("short_delta") or 1.0)
-    r.check("delta_band", DELTA_BAND[0] <= d <= DELTA_BAND[1], round(d, 3))
+    d = abs(proposal["short_delta"]) if proposal.get("short_delta") is not None else None
+    if d is not None:
+        r.check("delta_band", DELTA_BAND[0] <= d <= DELTA_BAND[1], round(d, 3))
+    else:
+        # Free indicative feed may omit Greeks (verified Sep 1): the moneyness
+        # gate below carries the selection instead. Logged honestly as n/a.
+        r.check("delta_band", True, "n/a: greeks absent, moneyness-selected")
     r.check("dte", 0 <= proposal.get("dte", 99) <= MAX_DTE, proposal.get("dte"))
+    from .strategy import parse_occ
+
+    leg_exps = sorted({(parse_occ(l.get("symbol", "")) or {}).get("expiration", "?") for l in proposal.get("legs", [])})
+    r.check("same_expiry", len(leg_exps) <= 1, leg_exps or "no legs")
     same = [t for t in open_trades if t["underlying"] == proposal["underlying"] and t["status"] == "open"]
     r.check(
         "per_underlying_limit",

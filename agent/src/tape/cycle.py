@@ -7,7 +7,7 @@ analyst -> gates -> execute. Every step already journals its own receipts.
 from __future__ import annotations
 
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from . import risk
 from .analyst import Analyst
@@ -147,11 +147,19 @@ class Desk:
 
     def scan_and_trade(self, equity: float, clock: dict, daily_realized: float) -> None:
         candidates = []
+        today = datetime.now(timezone.utc).date()
+        exp_lte = (today + timedelta(days=risk.MAX_DTE)).isoformat()
         for sym in UNIVERSE:
             price = self.ex.stock_quote(sym)
             if not price:
                 continue
-            chain = self.ex.option_chain(sym)
+            chain = self.ex.option_chain(
+                sym,
+                exp_gte=today.isoformat(),
+                exp_lte=exp_lte,
+                strike_gte=round(price * 0.88),
+                strike_lte=round(price * 1.12),
+            )
             cands = build_candidates(sym, price, chain, snapshot_fetch=self.ex.snapshot)
             candidates.extend(cands)
         if not candidates:
@@ -189,7 +197,8 @@ class Desk:
         if not report.approved:
             return
         legs = c["legs"]
-        result = self.ex.place_credit_spread(legs, qty, c["credit"])
+        client_id = f"tape-{serial:04d}-{int(time.time())}"
+        result = self.ex.place_credit_spread(legs, qty, c["credit"], client_order_id=client_id)
         order_ids = _order_ids(result)
         trade_id = f"T-{serial:04d}"
         self.j.open_trade(

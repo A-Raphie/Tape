@@ -8,6 +8,7 @@ import time
 from typing import Any
 
 from .mcp_client import AlpacaMcp, McpError
+from .risk import ENTRY_SLIPPAGE
 
 
 class Executor:
@@ -32,21 +33,21 @@ class Executor:
             return set()
         return set((t.get("inputSchema") or {}).get("properties", {}).keys())
 
-    # -- account ------------------------------------------------------------
+    # -- account + clock ------------------------------------------------------
 
     def account(self) -> dict:
-        name = self._tool_name("account") or "get_account_info"
+        name = self._tool_name("get_account_info") or "account"
         return self.mcp.call(name, {})
 
     def clock(self) -> dict:
-        name = self._tool_name("clock")
-        if not name:
-            return {}
-        return self.mcp.call(name, {})
+        """No clock tool on the server (verified Sep 1): derive US regular
+        hours locally. Sep run = EDT = UTC-4, so 13:30-20:00 UTC, Mon-Fri."""
+        from .market_hours import clock_now
+
+        return clock_now()
 
     def positions(self) -> list[dict]:
-        name = self._tool_name("positions") or "get_all_positions"
-        out = self.mcp.call(name, {})
+        out = self.mcp.call("get_all_positions", {})
         if isinstance(out, list):
             return out
         if isinstance(out, dict):
@@ -56,9 +57,10 @@ class Executor:
         return []
 
     def orders(self, status: str = "open") -> list[dict]:
-        name = self._tool_name("orders") or "get_orders"
+        props = self._schema_props("get_orders")
+        args = {"status": status} if "status" in props else {}
         try:
-            out = self.mcp.call(name, {"status": status} if "status" in self._schema_props("orders") else {})
+            out = self.mcp.call("get_orders", args)
         except McpError:
             return []
         if isinstance(out, list):
@@ -69,61 +71,66 @@ class Executor:
                     return out[key]
         return []
 
-    def option_chain(self, underlying: str) -> list[dict]:
-        name = self._tool_name("option_chain") or "get_option_contracts"
-        props = self._schema_props("option_chain") if "option_chain" in name else self._schema_props("contracts")
-        args: dict[str, Any] = {}
-        for k in props:
-            if "underlying" in k:
-                args[k] = underlying
-        out = self.mcp.call(name, args)
-        if isinstance(out, list):
-            return out
-        if isinstance(out, dict):
-            for key in ("contracts", "snapshots", "data", "results", "option_contracts"):
-                if isinstance(out.get(key), list):
-                    return out[key]
+    # -- market data (shapes verified live Sep 1) -----------------------------
+
+    def stock_quote(self, symbol: str) -> float | None:
+        out = self.mcp.call("get_stock_latest_quote", {"symbols": symbol})
+        quotes = out.get("quotes", {}) if isinstance(out, dict) else {}
+        q = quotes.get(symbol) or {}
+        bid, ask = q.get("bp"), q.get("ap")
+        if bid and ask:
+            return round((float(bid) + float(ask)) / 2, 2)
+        return None
+
+    def option_chain(
+        self,
+        underlying: str,
+        *,
+        exp_gte: str | None = None,
+        exp_lte: str | None = None,
+        opt_type: str | None = None,
+        strike_gte: float | None = None,
+        strike_lte: float | None = None,
+        limit: int = 500,
+    ) -> list[dict]:
+        """Returns a list of {symbol, latestQuote, greeks?, impliedVolatility?}
+        dicts; contract metadata is encoded in the OCC symbol and parsed in
+        strategy.parse_occ."""
+        args: dict[str, Any] = {"underlying_symbol": underlying, "limit": limit}
+        if exp_gte:
+            args["expiration_date_gte"] = exp_gte
+        if exp_lte:
+            args["expiration_date_lte"] = exp_lte
+        if opt_type:
+            args["type"] = opt_type
+        if strike_gte:
+            args["strike_price_gte"] = strike_gte
+        if strike_lte:
+            args["strike_price_lte"] = strike_lte
+        out = self.mcp.call("get_option_chain", args)
+        snaps = out.get("snapshots", {}) if isinstance(out, dict) else {}
+        if isinstance(snaps, dict):
+            return [{"symbol": sym, **(payload or {})} for sym, payload in snaps.items()]
+        if isinstance(snaps, list):
+            return snaps
         return []
 
     def snapshot(self, symbol: str) -> dict | None:
-        name = self._tool_name("snapshot")
-        if not name:
-            return None
-        props = self._schema_props("snapshot")
-        args = {}
-        for k in props:
-            if "symbol" in k or k in ("symbols",):
-                args[k] = symbol
-        try:
-            return self.mcp.call(name, args)
-        except McpError:
-            return None
-
-    def stock_quote(self, symbol: str) -> float | None:
-        name = self._tool_name("latest_quote") or self._tool_name("stock-data")
-        if not name:
-            return None
-        props = self._schema_props("latest_quote")
-        args = {k: symbol for k in props if "symbol" in k}
-        try:
-            out = self.mcp.call(name, args)
-        except McpError:
-            return None
-        if isinstance(out, dict):
-            for key in ("price", "last", "trade_price", "close"):
-                if out.get(key):
-                    try:
-                        return float(out[key])
-                    except (TypeError, ValueError):
-                        pass
-            trade = out.get("latestTrade") or out.get("trade") or {}
-            if isinstance(trade, dict) and trade.get("price"):
-                return float(trade["price"])
-        return None
+        out = self.mcp.call("get_option_snapshot", {"symbols": symbol})
+        snaps = out.get("snapshots", {}) if isinstance(out, dict) else {}
+        payload = snaps.get(symbol) if isinstance(snaps, dict) else None
+        return {"symbol": symbol, **(payload or {})} if payload else None
 
     # -- orders -------------------------------------------------------------
 
-    def place_credit_spread(self, legs: list[dict], qty: int, credit: float) -> dict:
+    def place_credit_spread(
+        self,
+        legs: list[dict],
+        qty: int,
+        credit: float,
+        client_order_id: str | None = None,
+        order_type: str = "limit",
+    ) -> dict:
         """legs: [{symbol, side: buy|sell, position_intent, ratio_qty}]. Uses
         mleg if the tool schema supports it; otherwise two single-leg orders
         sequenced on fill (never simultaneous)."""
@@ -144,21 +151,24 @@ class Executor:
             ]
             for k in props:
                 if k == "qty" or "quantity" in k:
-                    args[k] = qty
+                    args[k] = str(qty)
                 if k == "order_class":
                     args[k] = "mleg"
                 if k == "type":
-                    args[k] = "limit"
+                    args[k] = order_type
                 if k == "time_in_force":
                     args[k] = "day"
-                if k == "limit_price":
-                    # credit structures: negative limit = net credit (Alpaca REST spec)
-                    args[k] = -abs(round(credit, 2)) if "credit" in props or True else round(credit, 2)
+                if k == "limit_price" and order_type == "limit":
+                    # marketable credit: mid minus slippage (paper fills only
+                    # when marketable); negative limit = net credit; strings only
+                    args[k] = str(-abs(round(credit - ENTRY_SLIPPAGE, 2)))
+            if client_order_id and "client_order_id" in props:
+                args["client_order_id"] = client_order_id
             return self.mcp.call(tool, args)
         # fallback: single-leg sequencing
         results = []
         for l in legs:
-            args = {"symbol": l["symbol"], "qty": qty, "side": l["side"]}
+            args = {"symbol": l["symbol"], "qty": str(qty), "side": l["side"]}
             for k in props:
                 if "intent" in k:
                     args[k] = l["position_intent"]
@@ -168,7 +178,7 @@ class Executor:
                     args[k] = "day"
                 if k == "limit_price":
                     ref = l.get("bid") or l.get("ask") or 0.5
-                    args[k] = round(ref * (1.02 if l["side"] == "sell" else 0.98), 2)
+                    args[k] = str(round(ref * (1.02 if l["side"] == "sell" else 0.98), 2))
             results.append(self.mcp.call(tool, args))
             time.sleep(1.0)  # pace: avoid rapid-opposing-order rejections
         return results
@@ -181,7 +191,7 @@ class Executor:
         props = self._schema_props("place_option_order")
         intent = "sell_to_close" if from_side == "buy" else "buy_to_close"
         side = "sell" if from_side == "buy" else "buy"
-        args: dict[str, Any] = {"symbol": symbol, "qty": qty, "side": side}
+        args: dict[str, Any] = {"symbol": symbol, "qty": str(qty), "side": side}
         for k in props:
             if "intent" in k:
                 args[k] = intent
@@ -190,6 +200,9 @@ class Executor:
             if k == "time_in_force":
                 args[k] = "day"
         return self.mcp.call(tool, args)
+
+    def cancel_order(self, order_id: str) -> dict:
+        return self.mcp.call("cancel_order_by_id", {"order_id": order_id})
 
     def wait_fill(self, order_id: str, timeout: float = 90.0) -> str:
         """State-driven fill wait: poll the order by id until terminal."""

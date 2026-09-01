@@ -41,7 +41,7 @@ class AlpacaMcp:
     def start(self) -> None:
         env = dict(os.environ)
         env.setdefault("ALPACA_PAPER_TRADE", "true")  # paper only, ever
-        env.setdefault("ALPACA_TOOLSETS", "account,trading,options-data")
+        env.setdefault("ALPACA_TOOLSETS", "account,trading,options-data,stock-data")
         self._proc = subprocess.Popen(
             self.command,
             stdin=subprocess.PIPE,
@@ -174,8 +174,22 @@ class AlpacaMcp:
             )
             if not ok:
                 raise McpError(f"{tool} tool error: {_content_text(result)[:500]}")
-            return _parse_content(result)
+            return _unwrap_envelope(_parse_content(result))
         # unreachable
+
+
+def _unwrap_envelope(value: Any) -> Any:
+    """The official server wraps payloads two ways (verified Sep 1):
+    {_alpaca_mcp_security, data} on reads, and {result: X[, next_page_token]}
+    on list/mutation endpoints. Return the inner payload; keep wrappers out of
+    downstream parsers. get_all_positions additionally proved unreliable
+    (empty while get_open_position shows positions) — reconcile uses both."""
+    if isinstance(value, dict):
+        if "_alpaca_mcp_security" in value and "data" in value:
+            return value["data"]
+        if "result" in value and len(value) <= 2:
+            return value["result"]
+    return value
 
 
 def _content_text(result: dict) -> str:
