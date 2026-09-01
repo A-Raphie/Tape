@@ -169,7 +169,11 @@ class Desk:
         if self.analyst is None:
             picks = {"picks": [], "rejects": []}
         else:
-            picks = self.analyst.judge(candidates)
+            try:
+                picks = self.analyst.judge(candidates)
+            except Exception as exc:  # analyst hiccup never kills the cycle
+                self.j.receipt("analyst_error", {"error": repr(exc)}, ok=False)
+                picks = {"picks": [], "rejects": []}
         self.j.receipt("scan", {"candidates": len(candidates), "picks": picks})
 
         by_id = {c["candidate_id"]: c for c in candidates}

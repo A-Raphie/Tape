@@ -60,6 +60,12 @@ class Llm:
                 last_err = f"{resp.status_code}"
                 time.sleep(min(2**attempt, 10))
                 continue
+            if resp.status_code == 400 and "json_validate_failed" in resp.text:
+                # transient empty generation from strict JSON mode (seen live):
+                # retry rather than kill the cycle
+                last_err = "400 json_validate_failed"
+                time.sleep(min(2**attempt, 10))
+                continue
             if resp.status_code != 200:
                 raise LlmError(f"{resp.status_code}: {resp.text[:300]}")
             text = resp.json()["choices"][0]["message"]["content"]
