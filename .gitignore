@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.db
+*.db-journal
+*.jsonl
+node_modules/
+.next/
+out/
+.DS_Store

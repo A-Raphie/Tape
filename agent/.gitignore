@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+tape.db
+tape.db-journal
+tape.db.jsonl
+node_modules/
+.next/
+out/
+.DS_Store
