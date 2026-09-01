@@ -9,3 +9,7 @@ node_modules/
 .next/
 out/
 .DS_Store
+
+# local key files, never tracked
+.env.dev
+agent/.env.dev
