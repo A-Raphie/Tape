@@ -1,0 +1,42 @@
+INFO:     Started server process [30624]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8814 (Press CTRL+C to quit)
+INFO:     127.0.0.1:49461 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49462 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49474 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49475 - "GET /_next/static/chunks/webpack-68f22649503f8e75.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49474 - "GET /_next/static/css/a91bc9ed6e6c29cd.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49474 - "GET /_next/static/chunks/517-a5158f472630e46e.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49475 - "GET /_next/static/chunks/4bd1b696-1aaacd546f10f1e9.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49478 - "GET /_next/static/chunks/main-app-cb603c0321883f9e.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /_next/static/chunks/173-3048be2d38b9f0b0.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49480 - "GET /_next/static/chunks/app/page-da1a83390442750b.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49475 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49480 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /desk/index.txt?_rsc=1ld0r HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49474 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /_next/static/chunks/app/desk/page-fbb84685096788d0.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:49474 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49474 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49479 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49516 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49516 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49516 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49535 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49535 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49535 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49572 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49498 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49572 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
