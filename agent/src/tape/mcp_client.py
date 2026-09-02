@@ -69,7 +69,10 @@ class AlpacaMcp:
             self.command,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            # stderr MUST NOT be a pipe we never drain: the server logs every
+            # call, the 64KB buffer fills after ~an hour, and the server
+            # deadlocks mid-session (the Sep 2 freeze). Devnull it.
+            stderr=subprocess.DEVNULL,
             text=True,
             bufsize=1,
             env=env,
