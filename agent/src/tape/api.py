@@ -77,7 +77,7 @@ def trades():
 def gate_evals(limit: int = Query(40, le=200)):
     rows = journal().query(
         "SELECT id,ts,serial,proposal,approved,reasons FROM gate_evals ORDER BY id DESC LIMIT ?", (limit,)
-    ).fetchall()
+    )
     return {
         "gate_evals": [
             {
