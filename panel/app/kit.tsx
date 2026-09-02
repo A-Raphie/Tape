@@ -156,26 +156,37 @@ export function StatTile({ label, value, sub, tone }: { label: string; value: st
   );
 }
 
-/* --- GateList: every gate with its pass value, blocked or approved --- */
+/* --- GateList: every rule with its pass value, blocked or approved --- */
 
-export function GateList({ gates }: { gates: { gate: string; pass: boolean; value: unknown }[] }) {
+export function gateHuman(g: { gate: string; pass: boolean; value: unknown }): { name: string; detail: string; pass: boolean } {
+  const v = g.value;
+  let detail = "";
+  if (v && typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    if ("max_loss" in o && "cap" in o) detail = `$${Number(o.max_loss).toFixed(0)} risked vs $${Number(o.cap).toFixed(0)} allowed`;
+    else if ("aggregate" in o && "cap" in o) detail = `$${Number(o.aggregate).toFixed(0)} open vs $${Number(o.cap).toFixed(0)} allowed`;
+    else if ("open" in o && "cap" in o) detail = `${o.open} open vs ${o.cap} allowed`;
+    else detail = JSON.stringify(v);
+  } else if (typeof v === "number") {
+    detail = g.gate === "delta_band" ? `delta ${v.toFixed(2)}` : g.gate === "dte" ? `${v} days` : String(v);
+  } else if (typeof v === "string") {
+    detail = v;
+  }
+  return { name: GATE_NAMES[g.gate] ?? g.gate, detail, pass: g.pass };
+}
+
+export function GateList({ gates }: { gates: { name: string; detail: string; pass: boolean }[] }) {
   return (
     <div className="gate-list">
       {gates.map((g, i) => (
         <div key={i} className="row gate-row">
           <span className={`stamp ${g.pass ? "stamp-match" : "stamp-error"}`}>{g.pass ? "PASS" : "BLOCK"}</span>
-          <span className="mono gate-name">{g.gate}</span>
-          <span className="caption gate-value">{fmtValue(g.value)}</span>
+          <span className="mono gate-name">{g.name}</span>
+          <span className="caption gate-value">{g.detail}</span>
         </div>
       ))}
     </div>
   );
-}
-
-function fmtValue(v: unknown): string {
-  if (v == null) return "n/a";
-  if (typeof v === "object") return JSON.stringify(v);
-  return String(v);
 }
 
 /* --- ThesisCard: analyst verdict with thesis or reject reason --- */
@@ -214,6 +225,24 @@ export function ReceiptModal({ receipt, onClose }: { receipt: Receipt | null; on
   } catch {
     payload = { raw: String(receipt.payload) };
   }
+  const KIND_WORDS: Record<string, string> = {
+    entry_proposal: "trade decision",
+    trade_opened: "order filled",
+    trade_closed: "position closed",
+    close_intent: "close decision",
+    reconcile: "reconcile pass",
+    state_repair: "journal repair",
+    order_unfilled: "order cancelled",
+    flatten_all: "flatten everything",
+    halt: "trading halted",
+    llm_judgment: "analyst verdict",
+    scribe_grade: "nightly grade",
+    mcp_call: "broker call",
+    cycle: "desk cycle",
+    scan: "market scan",
+    loading: "fetching receipt",
+    not_found: "older receipt",
+  };
   return (
     <div className="receipt-scrim" onClick={onClose}>
       <article
@@ -227,8 +256,7 @@ export function ReceiptModal({ receipt, onClose }: { receipt: Receipt | null; on
           <div>
             <div className="serial receipt-serial">RECEIPT #{receipt.serial}</div>
             <div className="micro">
-              {receipt.ts} · {receipt.kind}
-              {receipt.tool ? ` · ${receipt.tool}` : ""} · {receipt.ok ? "OK" : "FAILED"}
+              {humanDate(receipt.ts)} · {KIND_WORDS[receipt.kind] ?? receipt.kind} · {receipt.ok ? "OK" : "FAILED"}
             </div>
           </div>
           <button ref={closeRef} className="btn btn-ghost receipt-close" onClick={onClose} aria-label="close receipt">
@@ -236,23 +264,226 @@ export function ReceiptModal({ receipt, onClose }: { receipt: Receipt | null; on
           </button>
         </header>
         <hr className="divider receipt-tear" />
-        <ReceiptBody payload={payload} />
+        {receipt.kind === "loading" ? (
+          <div className="receipt-body">
+            <p className="caption receipt-headline">Fetching receipt #{receipt.serial} from the journal…</p>
+          </div>
+        ) : receipt.kind === "not_found" ? (
+          <div className="receipt-body">
+            <p className="caption receipt-headline">
+              This receipt is older than this page's window. It exists in the journal archive; the tape strip and
+              reconcile table always reflect the latest entries.
+            </p>
+          </div>
+        ) : (
+          <ReceiptBody payload={payload} serial={receipt.serial} />
+        )}
         <footer className="micro receipt-foot">journal entry · every cycle reconciles the journal against the account on the desk</footer>
       </article>
     </div>
   );
 }
 
-function ReceiptBody({ payload }: { payload: Record<string, unknown> }) {
-  const entries = Object.entries(payload);
+function ReceiptBody({ payload, serial }: { payload: Record<string, unknown>; serial: number }) {
   return (
     <div className="receipt-body">
-      {entries.map(([k, v]) => (
-        <section key={k} className="receipt-section">
-          <div className="micro">{k}</div>
-          <pre className="mono receipt-payload">{typeof v === "string" ? v : JSON.stringify(v, null, 2)}</pre>
+      <Headline payload={payload} />
+      {typeof payload.thesis === "string" && payload.thesis ? (
+        <section className="receipt-section">
+          <div className="micro">the analyst's reasoning</div>
+          <p className="receipt-thesis">“{payload.thesis}”</p>
         </section>
-      ))}
+      ) : null}
+      <LegsSection payload={payload} />
+      <GatesSection serial={serial} />
+      <RawEvidence payload={payload} />
     </div>
+  );
+}
+
+/* Decode OCC symbols: SPY260902C00765000 -> SPY 765 call, Sep 2 */
+const OCC = /^([A-Z]+)(\d{6})([CP])(\d{8})$/;
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function humanSymbol(occ: string): string {
+  const m = OCC.exec((occ || "").trim().toUpperCase());
+  if (!m) return occ;
+  const root = m[1];
+  const d = m[2];
+  const strike = (parseInt(m[4], 10) / 1000).toString();
+  return `${root} ${strike} ${m[3] === "C" ? "call" : "put"}, ${MONTHS[parseInt(d.slice(2, 4), 10) - 1]} ${parseInt(d.slice(4, 6), 10)}`;
+}
+
+function humanDate(iso: string): string {
+  if (!iso) return "";
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})/.exec(iso);
+  if (!m) return iso;
+  return `${MONTHS[parseInt(m[2], 10) - 1]} ${parseInt(m[3], 10)}, ${m[4]} UTC`;
+}
+
+function humanTitle(payload: Record<string, unknown>): string {
+  const p = payload as {
+    proposal?: { underlying?: string; structure?: string; short_strike?: number; width?: number; expiration?: string; qty?: number; credit?: number; legs?: { symbol: string; side: string }[] };
+    candidate?: string;
+    trade?: string;
+    reason?: string;
+    clean?: boolean;
+    diffs?: unknown[];
+    realized?: number;
+    kind?: string;
+  };
+  const prop = p.proposal;
+  const structure = prop?.structure ? prop.structure.replace(/_/g, " ") : "";
+  const legs = Array.isArray(prop?.legs) ? (prop.legs as { symbol: string; side: string }[]) : [];
+  const legStr = legs.length
+    ? `sell the ${humanSymbol(legs.find((l) => l.side === "sell")?.symbol ?? "")} and buy the ${humanSymbol(legs.find((l) => l.side === "buy")?.symbol ?? "")}`
+    : "";
+  switch (payload.kind ?? "") {
+    case "entry_proposal":
+      return `The desk wanted to ${legStr || "open a position"} · ${prop?.qty ?? "?"} sets at $${prop?.credit ?? "?"} credit each.`;
+    case "trade_opened":
+      return "The broker accepted the order and it filled. The position is now open on the account.";
+    case "trade_closed":
+      return `The position was closed${p.reason ? `: ${p.reason}` : ""}.`;
+    case "close_intent":
+      return `The desk decided to close this position${p.reason ? `: ${p.reason}` : ""}.`;
+    case "reconcile":
+      return p.clean
+        ? "The journal matches the account. No drift found."
+        : `The journal and the account disagree on ${Array.isArray(p.diffs) ? p.diffs.length : "?"} item(s), listed below.`;
+    case "state_repair":
+      return "The journal self-corrected: this trade never actually held a position, so it was retired.";
+    case "order_unfilled":
+      return "The order was placed but never filled, so it was cancelled. Nothing was traded.";
+    case "flatten_all":
+      return "The desk closed everything: end-of-session safety rule.";
+    case "halt":
+      return "Trading halted for the day: the loss limit was hit.";
+    default:
+      return "";
+  }
+}
+
+function Headline({ payload }: { payload: Record<string, unknown> }) {
+  const title = humanTitle(payload);
+  if (!title) return null;
+  return (
+    <section className="receipt-section">
+      <div className="micro">what happened</div>
+      <p className="receipt-headline">{title}</p>
+    </section>
+  );
+}
+
+function LegsSection({ payload }: { payload: Record<string, unknown> }) {
+  const prop = (payload.proposal ?? payload) as {
+    legs?: { symbol: string; side: string; bid?: number; ask?: number }[];
+    qty?: number;
+    credit?: number;
+    width?: number;
+    max_loss?: number;
+    underlying?: string;
+    short_strike?: number;
+    expiration?: string;
+    candidate_id?: string;
+    short_delta?: number;
+  };
+  const legs = Array.isArray(prop.legs) ? prop.legs : [];
+  if (!legs.length) return null;
+  const qty = prop.qty ?? 1;
+  return (
+    <section className="receipt-section">
+      <div className="micro">the trade</div>
+      <table className="leg-table">
+        <thead>
+          <tr>
+            <th>action</th>
+            <th>contract</th>
+            <th>quote at the time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {legs.map((l) => (
+            <tr key={l.symbol}>
+              <td>{l.side === "sell" ? "SELL" : "BUY"}</td>
+              <td className="mono">{humanSymbol(l.symbol)}</td>
+              <td className="mono">{l.bid != null && l.ask != null ? `${l.bid.toFixed(2)} to ${l.ask.toFixed(2)}` : ""}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <dl className="leg-facts">
+        {prop.credit != null ? (
+          <div>
+            <dt>cash collected now</dt>
+            <dd className="number-sm">${(prop.credit * qty * 100).toFixed(2)} credit</dd>
+          </div>
+        ) : null}
+        {prop.width != null ? (
+          <div>
+            <dt>worst case at expiry</dt>
+            <dd className="number-sm">${((prop.width - (prop.credit ?? 0)) * qty * 100).toFixed(2)} loss</dd>
+          </div>
+        ) : null}
+        {prop.short_delta != null ? (
+          <div>
+            <dt>distance from the money</dt>
+            <dd className="number-sm">delta {Math.abs(prop.short_delta).toFixed(2)}</dd>
+          </div>
+        ) : null}
+      </dl>
+    </section>
+  );
+}
+
+const GATE_NAMES: Record<string, string> = {
+  market_open: "Market is open",
+  not_last_30min: "Not in the final 30 minutes",
+  per_trade_max_loss: "Size cap: max loss per trade (2.5% of account)",
+  aggregate_risk: "Total open risk cap (20% of account)",
+  daily_halt: "Daily loss limit (4%) not hit",
+  delta_band: "Short leg in the 0.10-0.40 delta band",
+  dte: "Expires within 5 days",
+  same_expiry: "Both legs share the same expiry",
+  per_underlying_limit: "Max 2 positions per ticker",
+  short_not_deep_itm: "Short strike not too close to the price",
+  liquidity: "Spread is liquid enough to trade",
+  credit_positive: "The trade collects cash, not pays it",
+  flatten_deadline: "Outside the Friday flatten window",
+};
+
+function GatesSection({ serial }: { serial: number }) {
+  const [gates, setGates] = useState<{ gate: string; pass: boolean; value: unknown }[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch(`${API}/api/gate_evals?limit=200`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!alive || !d) return;
+        const hit = (d.gate_evals ?? []).find((g: { serial: number | null }) => g.serial === serial);
+        setGates(hit ? hit.reasons : []);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [serial]);
+  if (gates === null || gates.length === 0) return null;
+  return (
+    <section className="receipt-section">
+      <div className="micro">the rules it had to pass</div>
+      <GateList gates={gates.map(gateHuman)} />
+    </section>
+  );
+}
+
+function RawEvidence({ payload }: { payload: Record<string, unknown> }) {
+  const { kind: _k, thesis: _t, ...rest } = payload;
+  const hasRest = Object.keys(rest).length > 0;
+  return (
+    <details className="receipt-raw">
+      <summary className="micro">raw evidence (exact journal record)</summary>
+      <pre className="mono receipt-payload">{JSON.stringify(hasRest ? rest : payload, null, 2)}</pre>
+    </details>
   );
 }

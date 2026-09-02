@@ -5,7 +5,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { fetchReceipt, GateList, ReceiptModal, Sparkline, StatTile, TapeStrip, useApi, type Receipt, type Trade } from "../kit";
+import { fetchReceipt, gateHuman, GateList, ReceiptModal, Sparkline, StatTile, TapeStrip, useApi, type Receipt, type Trade } from "../kit";
 
 type GateEval = {
   id: number;
@@ -216,7 +216,7 @@ function BlockCard({ gate, onSerial }: { gate: GateEval; onSerial: (serial: numb
         <span className="stamp stamp-error">BLOCKED</span>
         <span className="mono caption block-cand">{p.candidate_id ?? ""}</span>
       </div>
-      <GateList gates={shown} />
+      <GateList gates={shown.map(gateHuman)} />
       <div className="row gate-toggle-row">
         <button className="btn btn-ghost gate-toggle" onClick={() => setShowAll(!showAll)}>
           {showAll ? "show failures only" : `show all ${gate.reasons.length} gates`}
