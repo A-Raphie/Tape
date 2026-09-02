@@ -75,7 +75,10 @@ class Desk:
     # -- reconcile ----------------------------------------------------------
 
     def reconcile(self) -> bool:
-        """Journal claims vs account ground truth. This table IS the product."""
+        """Journal claims vs account ground truth. This table IS the product.
+        Drift is not just reported: open trades whose legs have no positions
+        are repaired to closed with a lesson, so the journal converges on the
+        account instead of arguing with it."""
         positions = self.ex.positions()
         pos_symbols = {p.get("symbol") or p.get("asset_id") for p in positions}
         pos_symbols = {s for s in pos_symbols if s}
@@ -91,7 +94,22 @@ class Desk:
             diffs.append({"type": "receipt_without_position", "symbol": s})
         clean = not diffs
         self.j.reconcile(clean, diffs)
+        if not clean:
+            self._repair(open_trades, pos_symbols)
         return clean
+
+    def _repair(self, open_trades: list[dict], pos_symbols: set[str]) -> None:
+        for t in open_trades:
+            leg_symbols = {leg["symbol"] for leg in t["legs"]}
+            if leg_symbols and leg_symbols <= pos_symbols:
+                continue  # still held (at least partially): leave for management
+            if not (leg_symbols & pos_symbols):
+                serial = self.j.receipt(
+                    "state_repair",
+                    {"trade": t["trade_id"], "reason": "no position at reconcile: unfilled or removed"},
+                )
+                self.j.close_trade(t["trade_id"], 0.0, serial)
+                self.j.lesson(t["trade_id"], "Order was journaled open but never filled: the desk now verifies fills before journaling.", source="reconcile_repair")
 
     # -- trade management ---------------------------------------------------
 
@@ -204,6 +222,24 @@ class Desk:
         client_id = f"tape-{serial:04d}-{int(time.time())}"
         result = self.ex.place_credit_spread(legs, qty, c["credit"], client_order_id=client_id)
         order_ids = _order_ids(result)
+        # fill-verified entries: a journal trade must mean a held position,
+        # not an accepted order (learned via reconcile drift, Sep 2)
+        filled = False
+        for oid in order_ids:
+            if self.ex.wait_fill(oid, timeout=75.0) == "filled":
+                filled = True
+        if not filled:
+            for oid in order_ids:
+                try:
+                    self.ex.cancel_order(oid)
+                except Exception:
+                    pass
+            self.j.receipt(
+                "order_unfilled",
+                {"trade": f"T-{serial:04d}", "candidate": c["candidate_id"], "order_ids": order_ids},
+                ok=False,
+            )
+            return
         trade_id = f"T-{serial:04d}"
         self.j.open_trade(
             {
