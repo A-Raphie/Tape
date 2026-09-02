@@ -5,7 +5,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { GateList, ReceiptModal, Sparkline, StatTile, TapeStrip, useApi, type Receipt, type Trade } from "../kit";
+import { fetchReceipt, GateList, ReceiptModal, Sparkline, StatTile, TapeStrip, useApi, type Receipt, type Trade } from "../kit";
 
 type GateEval = {
   id: number;
@@ -20,22 +20,43 @@ type ReconcileRun = { id: number; ts: string; clean: boolean; diffs: { type: str
 
 type Lesson = { id: number; ts: string; trade_id: string | null; lesson: string; source: string };
 
+const money = (v: number) => `$${v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 export default function Desk() {
-  const state = useApi<{ equity: number | null; cash: number | null; receipts: number; market_open: boolean; minutes_to_close: number | null }>("/api/state");
-  const equity = useApi<{ points: { ts: string; equity: number }[] }>("/api/equity", 8000);
-  const receiptsRes = useApi<{ receipts: Receipt[] }>("/api/receipts?limit=40");
-  const tradesRes = useApi<{ trades: Trade[] }>("/api/trades");
-  const gatesRes = useApi<{ gate_evals: GateEval[] }>("/api/gate_evals");
-  const reconcileRes = useApi<{ runs: ReconcileRun[] }>("/api/reconcile", 8000);
-  const lessonsRes = useApi<{ lessons: Lesson[] }>("/api/lessons", 15000);
+  const { data: state, stale } = useApi<{ equity: number | null; cash: number | null; receipts: number; market_open: boolean; minutes_to_close: number | null; last_action: string | null }>("/api/state");
+  const { data: equity } = useApi<{ points: { ts: string; equity: number }[] }>("/api/equity", 8000);
+  const { data: receiptsRes } = useApi<{ receipts: Receipt[] }>("/api/receipts?limit=40");
+  const { data: tradesRes } = useApi<{ trades: Trade[] }>("/api/trades");
+  const { data: gatesRes } = useApi<{ gate_evals: GateEval[] }>("/api/gate_evals");
+  const { data: reconcileRes } = useApi<{ runs: ReconcileRun[] }>("/api/reconcile", 8000);
+  const { data: lessonsRes } = useApi<{ lessons: Lesson[] }>("/api/lessons", 15000);
   const [openReceipt, setOpenReceipt] = useState<Receipt | null>(null);
 
   const receipts = receiptsRes?.receipts ?? [];
   const trades = tradesRes?.trades ?? [];
   const openTrades = trades.filter((t) => t.status === "open");
   const closedTrades = trades.filter((t) => t.status === "closed");
-  const blocks = (gatesRes?.gate_evals ?? []).filter((g) => !g.approved);
+  const blocksAll = (gatesRes?.gate_evals ?? []).filter((g) => !g.approved);
+  const blocks = blocksAll.slice(0, 3);
   const lastReconcile = reconcileRes?.runs?.[0];
+
+  const openBySerial = (serial: number, direct: Receipt | null = null) => {
+    if (direct) {
+      setOpenReceipt(direct);
+      return;
+    }
+    const hit = receipts.find((r) => r.serial === serial);
+    if (hit) {
+      setOpenReceipt(hit);
+      return;
+    }
+    setOpenReceipt({ serial, ts: "", kind: "loading", tool: null, payload: "{}", ok: 1, latency_ms: null });
+    fetchReceipt(serial).then((full) =>
+      setOpenReceipt(
+        full ?? { serial, ts: "", kind: "not_found", tool: null, payload: JSON.stringify({ note: `receipt #${serial} is older than this page's window; it exists in the journal` }), ok: 1, latency_ms: null }
+      )
+    );
+  };
 
   return (
     <main className="desk">
@@ -46,21 +67,25 @@ export default function Desk() {
           </Link>
           <span className="micro"> · the desk</span>
         </div>
-        <span className={`stamp ${state?.market_open ? "stamp-match" : "stamp-neutral"}`}>
-          {state?.market_open ? `OPEN · ${state.minutes_to_close ?? "?"} min to close` : "CLOSED"}
-        </span>
+        {stale && state ? (
+          <span className="stamp stamp-pending">STALE · last entry {state.last_action?.slice(11, 16)} UTC</span>
+        ) : (
+          <span className={`stamp ${state?.market_open ? "stamp-match" : "stamp-neutral"}`}>
+            {state?.market_open ? `OPEN · ${state.minutes_to_close ?? "?"} min to close` : "MARKET CLOSED"}
+          </span>
+        )}
       </header>
 
       <section className="desk-strip">
-        <div className="micro">the tape · every action, in order, append-only</div>
-        <TapeStrip receipts={receipts} />
+        <div className="micro">the tape · decisions in order, append-only · click one to open its receipt</div>
+        <TapeStrip receipts={receipts} onSerial={openBySerial} />
       </section>
 
       <section className="desk-stats">
         <StatTile
           label="Equity"
-          value={state?.equity != null ? `$${state.equity.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "···"}
-          sub={state?.cash != null ? `cash $${state.cash.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : undefined}
+          value={state?.equity != null ? money(state.equity) : "···"}
+          sub={state?.cash != null ? `cash ${money(state.cash)}` : undefined}
         />
         <div className="card desk-chart">
           <div className="micro">equity, per cycle</div>
@@ -76,13 +101,13 @@ export default function Desk() {
         ) : (
           <div className="card">
             {openTrades.map((t) => (
-              <button key={t.trade_id} className="row row-btn" onClick={() => openSerial(receipts, t.serial_open, setOpenReceipt)}>
+              <button key={t.trade_id} className="row row-btn" onClick={() => openBySerial(t.serial_open ?? 0)}>
                 <span className="serial">#{t.serial_open}</span>
                 <span className="row-underlying">{t.underlying}</span>
                 <span className="row-structure">{t.structure}</span>
                 <span className="number-sm">x{t.qty}</span>
-                <span className="number-sm">credit ${t.credit?.toFixed(2)}</span>
-                <span className="caption">max loss ${t.max_loss.toFixed(2)}</span>
+                <span className="number-sm">credit {t.credit != null ? money(t.credit) : "···"}</span>
+                <span className="caption">max loss {money(t.max_loss)}</span>
                 <span className="stamp stamp-pending">OPEN</span>
               </button>
             ))}
@@ -92,21 +117,18 @@ export default function Desk() {
 
       <section className="desk-section">
         <h2 className="section-title">Risk desk · blocked proposals</h2>
-        {blocks.length === 0 ? (
+        {blocksAll.length === 0 ? (
           <p className="caption empty-note">No blocked proposals yet. Every block shows its gate-by-gate reasons here; blocks are receipts too.</p>
         ) : (
           <div className="card">
             {blocks.map((g) => (
-              <div key={g.id} className="block-card">
-                <div className="row row-head-static">
-                  <span className="serial">#{g.serial}</span>
-                  <span className="caption">{g.ts}</span>
-                  <span className="stamp stamp-error">BLOCKED</span>
-                  <span className="mono caption">{String((g.proposal as { candidate_id?: string }).candidate_id ?? "")}</span>
-                </div>
-                <GateList gates={g.reasons} />
-              </div>
+              <BlockCard key={g.id} gate={g} onSerial={openBySerial} />
             ))}
+            {blocksAll.length > blocks.length ? (
+              <div className="row">
+                <span className="caption">{blocksAll.length - blocks.length} older blocks · every one is a receipt on the tape</span>
+              </div>
+            ) : null}
           </div>
         )}
       </section>
@@ -118,14 +140,16 @@ export default function Desk() {
         ) : (
           <div className="card">
             {closedTrades.map((t) => (
-              <button key={t.trade_id} className="row row-btn" onClick={() => openSerial(receipts, t.serial_close ?? t.serial_open, setOpenReceipt)}>
-                <span className="serial">#{t.serial_open}</span>
+              <button key={t.trade_id} className="row row-btn" onClick={() => openBySerial(t.serial_close ?? t.serial_open ?? 0)}>
+                <span className="serial">#{t.serial_close ?? t.serial_open}</span>
                 <span className="row-underlying">{t.underlying}</span>
                 <span className="row-structure">{t.structure}</span>
                 <span className="number-sm">x{t.qty}</span>
                 <span className={`number-sm ${(t.realized_pnl ?? 0) >= 0 ? "tone-up" : "tone-down"}`}>
-                  {(t.realized_pnl ?? 0) >= 0 ? "+" : ""}${(t.realized_pnl ?? 0).toFixed(2)}
+                  {(t.realized_pnl ?? 0) >= 0 ? "+" : ""}
+                  {money(t.realized_pnl ?? 0)}
                 </span>
+                <span className="caption">thesis on #{t.serial_open}</span>
                 <span className="stamp stamp-neutral">CLOSED</span>
               </button>
             ))}
@@ -139,7 +163,7 @@ export default function Desk() {
           <div className="card">
             <div className="row row-head-static">
               <span className={`stamp ${lastReconcile.clean ? "stamp-match" : "stamp-mismatch"}`}>{lastReconcile.clean ? "MATCH" : "MISMATCH"}</span>
-              <span className="caption">{lastReconcile.ts}</span>
+              <span className="caption">{lastReconcile.ts.slice(11, 16)} UTC</span>
               <span className="caption">{lastReconcile.diffs.length} diffs on the latest pass</span>
             </div>
             {lastReconcile.diffs.map((d, i) => (
@@ -175,8 +199,29 @@ export default function Desk() {
   );
 }
 
-function openSerial(receipts: Receipt[], serial: number | null, set: (r: Receipt | null) => void) {
-  if (serial == null) return;
-  const hit = receipts.find((r) => r.serial === serial) ?? null;
-  set(hit);
+function BlockCard({ gate, onSerial }: { gate: GateEval; onSerial: (serial: number, direct?: Receipt | null) => void }) {
+  const [showAll, setShowAll] = useState(false);
+  const failing = gate.reasons.filter((r) => !r.pass);
+  const shown = showAll ? gate.reasons : failing.length ? failing : gate.reasons.slice(0, 2);
+  const p = gate.proposal as { underlying?: string; short_strike?: number; credit?: number; candidate_id?: string };
+  return (
+    <div className="block-card">
+      <div className="row row-head-static">
+        <button className="serial block-serial" onClick={() => onSerial(gate.serial ?? 0)}>
+          #{gate.serial}
+        </button>
+        <span className="caption">
+          {gate.ts.slice(11, 16)} UTC · {p.underlying ?? "?"} {p.short_strike != null ? p.short_strike : ""} credit {p.credit != null ? money(p.credit) : "?"}
+        </span>
+        <span className="stamp stamp-error">BLOCKED</span>
+        <span className="mono caption block-cand">{p.candidate_id ?? ""}</span>
+      </div>
+      <GateList gates={shown} />
+      <div className="row gate-toggle-row">
+        <button className="btn btn-ghost gate-toggle" onClick={() => setShowAll(!showAll)}>
+          {showAll ? "show failures only" : `show all ${gate.reasons.length} gates`}
+        </button>
+      </div>
+    </div>
+  );
 }

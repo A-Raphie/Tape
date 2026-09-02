@@ -4,7 +4,6 @@
 
 import Link from "next/link";
 import { Sparkline, StatTile, TapeStrip, useApi } from "./kit";
-import { useState } from "react";
 
 type State = {
   equity: number | null;
@@ -17,22 +16,29 @@ type State = {
   minutes_to_close: number | null;
 };
 
+const money = (v: number) => `$${v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 export default function FrontDoor() {
-  const state = useApi<State>("/api/state");
-  const equity = useApi<{ points: { ts: string; equity: number }[] }>("/api/equity", 8000);
-  const receipts = useApi<{ receipts: import("./kit").Receipt[] }>("/api/receipts?limit=14", 4000);
-  const [entered, setEntered] = useState(false);
+  const { data: state, stale, failed } = useApi<State>("/api/state");
+  const { data: equity } = useApi<{ points: { ts: string; equity: number }[] }>("/api/equity", 8000);
+  const { data: receiptsRes } = useApi<{ receipts: import("./kit").Receipt[] }>("/api/receipts?limit=14", 4000);
 
   return (
     <main className="frontdoor">
       <header className="fd-head">
         <div className="fd-brand">
-          <span className="fd-name">Tape</span>
+          <Link href="/" className="fd-name">
+            Tape
+          </Link>
           <span className="fd-tag">the proof-carrying options desk</span>
         </div>
-        <span className={`stamp ${state?.market_open ? "stamp-match" : "stamp-neutral"}`}>
-          {state?.market_open ? `MARKET OPEN · closes in ${state.minutes_to_close ?? "?"} min` : "MARKET CLOSED"}
-        </span>
+        {stale && state ? (
+          <span className="stamp stamp-pending">STALE · last journal entry {state.last_action?.slice(11, 16)} UTC</span>
+        ) : (
+          <span className={`stamp ${state?.market_open ? "stamp-match" : "stamp-neutral"}`}>
+            {state?.market_open ? `MARKET OPEN · closes in ${state.minutes_to_close ?? "?"} min` : "MARKET CLOSED"}
+          </span>
+        )}
       </header>
 
       <section className="fd-hero">
@@ -41,18 +47,12 @@ export default function FrontDoor() {
           Every order it places ships a serial-numbered receipt: the analyst's thesis, the risk desk's gate-by-gate
           evaluation, the raw MCP call, the fill. Then a reconcile pass proves the journal matches the account.
         </p>
-        <p className="fd-claim">
-          The tape doesn't lie. Now the agent can't either.
-        </p>
+        <p className="fd-claim">The tape doesn't lie. Now the agent can't either.</p>
       </section>
 
       <section className="fd-stats">
-        <StatTile
-          label="Account equity"
-          value={state?.equity != null ? `$${state.equity.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "···"}
-          sub="Alpaca paper account, live snapshot"
-        />
-        <StatTile label="Receipts on the tape" value={state ? String(state.receipts) : "···"} sub={`${state?.mcp_calls ?? 0} MCP calls receipted`} />
+        <StatTile label="Account equity" value={state?.equity != null ? money(state.equity) : "···"} sub="Alpaca paper account, live snapshot" />
+        <StatTile label="Receipts on the tape" value={state ? String(state.receipts) : "···"} sub={state ? `${state.mcp_calls} MCP calls receipted` : undefined} />
         <StatTile
           label="Structures"
           value={state ? `${state.open_trades} open · ${state.trades - state.open_trades} closed` : "···"}
@@ -61,10 +61,19 @@ export default function FrontDoor() {
       </section>
 
       <section className="card fd-live">
-        <div className="micro">live from the desk</div>
-        <TapeStrip receipts={receipts?.receipts ?? []} />
+        <div className="micro">
+          {failed && !state ? "can't reach the journal" : stale ? "showing the last synced tape" : "live from the desk"}
+        </div>
+        <TapeStrip receipts={receiptsRes?.receipts ?? []} />
         <Sparkline points={equity?.points ?? []} />
       </section>
+
+      <div className="fd-enter">
+        <Link href="/desk/" className="btn btn-primary btn-lg">
+          Enter the desk
+        </Link>
+        <span className="caption">no login, no keys shown: read-only views of the journal</span>
+      </div>
 
       <section className="fd-how">
         <ol className="fd-steps">
@@ -88,13 +97,6 @@ export default function FrontDoor() {
           <span className="fd-with-item">Groq openai/gpt-oss-120b</span>
         </div>
       </section>
-
-      <div className="fd-enter">
-        <Link href="/desk/" className="btn btn-primary btn-lg" onClick={() => setEntered(true)}>
-          Enter the desk
-        </Link>
-        <span className="caption">no login, no keys shown: read-only views of the journal</span>
-      </div>
     </main>
   );
 }

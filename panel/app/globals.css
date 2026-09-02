@@ -85,12 +85,6 @@ body {
   padding: 0 20px;
 }
 
-.panel {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-card);
-}
-
 .card {
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
@@ -141,21 +135,6 @@ body {
 
 .btn-ghost:hover {
   background: var(--bg-subtle);
-}
-
-.input {
-  min-height: 44px;
-  padding: 0 12px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-input);
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  font: inherit;
-}
-
-.input:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 1px;
 }
 
 /* Microcopy — 12px caps, tracked (all-caps stays under one line) */
@@ -323,16 +302,20 @@ a {
 .fd-claim {
   font-family: var(--font-mono);
   font-size: 0.9rem;
-  display: inline-block;
-  padding: 6px 10px;
+  display: inline;
   background: linear-gradient(var(--accent), var(--accent)) left bottom / 100% 40% no-repeat;
+  padding: 6px 4px 2px;
   margin: 0;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
-.fd-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+.fd-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .stat-tile {
@@ -434,6 +417,27 @@ a {
   border-radius: var(--radius-pill);
   padding: 3px 10px;
   white-space: nowrap;
+}
+
+.tape-chip-btn {
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  min-height: 0;
+}
+
+.tape-chip-btn:hover {
+  background: var(--accent-subtle);
+  border-color: var(--accent-deep);
+}
+
+.spark-fig {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .tape-chip-bad {
@@ -651,7 +655,28 @@ a {
 }
 
 .receipt-close {
-  min-height: 36px;
+  min-height: 44px;
+}
+
+.block-serial {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  align-self: center;
+}
+
+.block-cand {
+  text-align: right;
+}
+
+.gate-toggle-row {
+  padding: 6px 14px;
+}
+
+.gate-toggle {
+  min-height: 32px;
+  font-size: 0.85rem;
 }
 
 .receipt-tear {
@@ -695,11 +720,25 @@ a {
   }
 
   .row-btn {
-    grid-template-columns: 70px 1fr 84px;
+    grid-template-columns: 84px 1fr auto;
+    grid-auto-rows: min-content;
+    row-gap: 4px;
   }
 
-  .row-btn > :not(:nth-child(1)):not(:nth-child(2)):not(:last-child) {
-    display: none;
+  .row-btn > .row-structure,
+  .row-btn > .number-sm:first-of-type,
+  .row-btn > .caption {
+    grid-column: 2;
+  }
+
+  .row-head-static {
+    grid-template-columns: 84px 1fr auto;
+    row-gap: 4px;
+  }
+
+  .block-cand {
+    grid-column: 1 / -1;
+    text-align: left;
   }
 
   .gate-row {
