@@ -39,6 +39,20 @@ class AlpacaMcp:
     # -- lifecycle --------------------------------------------------------
 
     def start(self) -> None:
+        """Cold starts re-download the server via uvx (fresh containers have
+        no cache): retry the whole spawn+handshake, generously timed."""
+        last: Exception | None = None
+        for attempt in range(3):
+            try:
+                self._start_once(timeout=240.0 if attempt == 0 else 90.0)
+                return
+            except (McpError, OSError) as exc:
+                last = exc
+                self.stop()
+                time.sleep(3.0)
+        raise McpError(f"MCP server failed to start after 3 attempts: {last}")
+
+    def _start_once(self, timeout: float) -> None:
         env = dict(os.environ)
         env.setdefault("ALPACA_PAPER_TRADE", "true")  # paper only, ever
         env.setdefault("ALPACA_TOOLSETS", "account,trading,options-data,stock-data")
@@ -63,7 +77,7 @@ class AlpacaMcp:
                 },
             }
         )
-        self._read_response()
+        self._read_response(timeout=timeout)
         self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
         self.tools = self.list_tools()
 

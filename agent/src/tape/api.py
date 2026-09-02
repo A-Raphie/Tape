@@ -43,7 +43,7 @@ def state():
     equity = snaps[-1]["equity"] if snaps else None
     cash = None
     if snaps:
-        row = j._conn.execute("SELECT cash FROM account_snapshots ORDER BY ts DESC LIMIT 1").fetchone()
+        row = j.query("SELECT cash FROM account_snapshots ORDER BY ts DESC LIMIT 1").fetchone()
         cash = row["cash"] if row else None
     from .market_hours import clock_now
 
@@ -75,7 +75,7 @@ def trades():
 
 @app.get("/api/gate_evals")
 def gate_evals(limit: int = Query(40, le=200)):
-    rows = journal()._conn.execute(
+    rows = journal().query(
         "SELECT id,ts,serial,proposal,approved,reasons FROM gate_evals ORDER BY id DESC LIMIT ?", (limit,)
     ).fetchall()
     return {
@@ -95,7 +95,7 @@ def gate_evals(limit: int = Query(40, le=200)):
 
 @app.get("/api/reconcile")
 def reconcile(limit: int = Query(20, le=100)):
-    rows = journal()._conn.execute(
+    rows = journal().query(
         "SELECT serial AS id, ts, payload FROM receipts WHERE kind='reconcile' ORDER BY serial DESC LIMIT ?", (limit,)
     ).fetchall()
     runs = []
@@ -119,7 +119,7 @@ def lessons():
 
 @app.get("/api/serial/{serial}")
 def one_receipt(serial: int):
-    row = journal()._conn.execute("SELECT * FROM receipts WHERE serial=?", (serial,)).fetchone()
+    row = journal().query("SELECT * FROM receipts WHERE serial=?", (serial,)).fetchone()
     if not row:
         raise HTTPException(404, "no such receipt")
     d = dict(row)

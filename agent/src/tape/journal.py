@@ -129,7 +129,14 @@ class Journal:
             args.append(kind)
         q += " ORDER BY serial DESC LIMIT ?"
         args.append(limit)
-        return [dict(r) for r in self._conn.execute(q, args).fetchall()]
+        with self._lock:
+            rows = self._conn.execute(q, args).fetchall()
+        return [dict(r) for r in rows]
+
+    def query(self, q: str, args: tuple = ()) -> list[sqlite3.Row]:
+        """Locked raw query for the API surface (reads share the connection)."""
+        with self._lock:
+            return self._conn.execute(q, args).fetchall()
 
     # -- trades -----------------------------------------------------------
 
@@ -173,9 +180,10 @@ class Journal:
             self._conn.commit()
 
     def equity_series(self, limit: int = 500) -> list[dict]:
-        rows = self._conn.execute(
-            "SELECT ts,equity FROM account_snapshots ORDER BY ts DESC LIMIT ?", (limit,)
-        ).fetchall()
+        with self._lock:
+            rows = self._conn.execute(
+                "SELECT ts,equity FROM account_snapshots ORDER BY ts DESC LIMIT ?", (limit,)
+            ).fetchall()
         return [{"ts": r["ts"], "equity": r["equity"]} for r in reversed(rows)]
 
     def gate_eval(self, serial: int, proposal: dict, approved: bool, reasons: list[dict]) -> None:
@@ -202,11 +210,14 @@ class Journal:
             self._conn.commit()
 
     def lessons(self) -> list[dict]:
-        return [dict(r) for r in self._conn.execute("SELECT * FROM lessons ORDER BY id DESC").fetchall()]
+        with self._lock:
+            rows = self._conn.execute("SELECT * FROM lessons ORDER BY id DESC").fetchall()
+        return [dict(r) for r in rows]
 
     def counts(self) -> dict:
         def one(q: str) -> int:
-            return int(self._conn.execute(q).fetchone()[0])
+            with self._lock:
+                return int(self._conn.execute(q).fetchone()[0])
 
         return {
             "receipts": one("SELECT COUNT(*) FROM receipts"),
