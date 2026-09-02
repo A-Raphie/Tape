@@ -127,11 +127,19 @@ def one_receipt(serial: int):
     return d
 
 
-# static panel last: /out from `next build` (static export)
+# static panel last: /out from `next build` (static export), all routes
 if PANEL_OUT.exists():
-    app.mount("/_next", StaticFiles(directory=PANEL_OUT / "_next"), name="next")
-    app.mount("/desk", StaticFiles(directory=PANEL_OUT / "desk", html=True), name="desk")
+    from fastapi.responses import FileResponse as _FR
 
-    @app.get("/")
-    def index():
-        return FileResponse(PANEL_OUT / "index.html")
+    app.mount("/_next", StaticFiles(directory=PANEL_OUT / "_next"), name="next")
+
+    @app.exception_handler(404)
+    async def not_found(request, exc):
+        custom = PANEL_OUT / "404.html"
+        if custom.exists():
+            return _FR(custom, status_code=404)
+        from fastapi.responses import PlainTextResponse
+
+        return PlainTextResponse("Not found", status_code=404)
+
+    app.mount("/", StaticFiles(directory=PANEL_OUT, html=True), name="panel")
