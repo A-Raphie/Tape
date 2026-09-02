@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import threading
 import time
@@ -29,7 +30,15 @@ class AlpacaMcp:
 
     def __init__(self, journal: Journal, command: list[str] | None = None):
         self.journal = journal
-        self.command = command or ["uvx", "alpaca-mcp-server"]
+        # The container bakes alpaca-mcp-server via pip (fast cold boots);
+        # locally we fall back to uvx. TAPE_MCP_COMMAND overrides both.
+        override = os.environ.get("TAPE_MCP_COMMAND")
+        if override:
+            self.command = override.split()
+        elif shutil.which("alpaca-mcp-server"):
+            self.command = ["alpaca-mcp-server"]
+        else:
+            self.command = ["uvx", "alpaca-mcp-server"]
         self._proc: subprocess.Popen | None = None
         self._id = 0
         self._lock = threading.Lock()
