@@ -168,9 +168,16 @@ export function gateHuman(g: { gate: string; pass: boolean; value: unknown }): {
     else if ("open" in o && "cap" in o) detail = `${o.open} open vs ${o.cap} allowed`;
     else detail = JSON.stringify(v);
   } else if (typeof v === "number") {
-    detail = g.gate === "delta_band" ? `delta ${v.toFixed(2)}` : g.gate === "dte" ? `${v} days` : String(v);
+    detail =
+      g.gate === "delta_band"
+        ? `delta ${v.toFixed(2)}`
+        : g.gate === "dte"
+          ? `${v} days`
+          : g.gate === "not_last_30min"
+            ? `${v} min to close`
+            : String(v);
   } else if (typeof v === "string") {
-    detail = v;
+    detail = g.gate === "market_open" ? humanDate(v) || v : v;
   }
   return { name: GATE_NAMES[g.gate] ?? g.gate, detail, pass: g.pass };
 }
@@ -276,7 +283,7 @@ export function ReceiptModal({ receipt, onClose }: { receipt: Receipt | null; on
             </p>
           </div>
         ) : (
-          <ReceiptBody payload={payload} serial={receipt.serial} />
+          <ReceiptBody payload={payload} serial={receipt.serial} kind={receipt.kind} />
         )}
         <footer className="micro receipt-foot">journal entry · every cycle reconciles the journal against the account on the desk</footer>
       </article>
@@ -284,10 +291,10 @@ export function ReceiptModal({ receipt, onClose }: { receipt: Receipt | null; on
   );
 }
 
-function ReceiptBody({ payload, serial }: { payload: Record<string, unknown>; serial: number }) {
+function ReceiptBody({ payload, serial, kind }: { payload: Record<string, unknown>; serial: number; kind: string }) {
   return (
     <div className="receipt-body">
-      <Headline payload={payload} />
+      <Headline kind={kind} payload={payload} />
       {typeof payload.thesis === "string" && payload.thesis ? (
         <section className="receipt-section">
           <div className="micro">the analyst's reasoning</div>
@@ -321,7 +328,7 @@ function humanDate(iso: string): string {
   return `${MONTHS[parseInt(m[2], 10) - 1]} ${parseInt(m[3], 10)}, ${m[4]} UTC`;
 }
 
-function humanTitle(payload: Record<string, unknown>): string {
+function humanTitle(kind: string, payload: Record<string, unknown>): string {
   const p = payload as {
     proposal?: { underlying?: string; structure?: string; short_strike?: number; width?: number; expiration?: string; qty?: number; credit?: number; legs?: { symbol: string; side: string }[] };
     candidate?: string;
@@ -338,7 +345,7 @@ function humanTitle(payload: Record<string, unknown>): string {
   const legStr = legs.length
     ? `sell the ${humanSymbol(legs.find((l) => l.side === "sell")?.symbol ?? "")} and buy the ${humanSymbol(legs.find((l) => l.side === "buy")?.symbol ?? "")}`
     : "";
-  switch (payload.kind ?? "") {
+  switch (kind) {
     case "entry_proposal":
       return `The desk wanted to ${legStr || "open a position"} · ${prop?.qty ?? "?"} sets at $${prop?.credit ?? "?"} credit each.`;
     case "trade_opened":
@@ -364,8 +371,8 @@ function humanTitle(payload: Record<string, unknown>): string {
   }
 }
 
-function Headline({ payload }: { payload: Record<string, unknown> }) {
-  const title = humanTitle(payload);
+function Headline({ kind, payload }: { kind: string; payload: Record<string, unknown> }) {
+  const title = humanTitle(kind, payload);
   if (!title) return null;
   return (
     <section className="receipt-section">
