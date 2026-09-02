@@ -47,14 +47,54 @@ class Executor:
         return clock_now()
 
     def positions(self) -> list[dict]:
-        out = self.mcp.call("get_all_positions", {})
-        if isinstance(out, list):
-            return out
-        if isinstance(out, dict):
-            for key in ("positions", "data", "results"):
-                if isinstance(out.get(key), list):
-                    return out[key]
-        return []
+        """get_all_positions proved unreliable on this server (returns empty
+        while get_open_position shows holdings, Sep 1/2): retry, then fall
+        back to netting today's fill activities, then per-symbol checks."""
+        import time as _time
+
+        for attempt in range(3):
+            out = self.mcp.call("get_all_positions", {})
+            rows = out if isinstance(out, list) else []
+            if isinstance(out, dict):
+                for key in ("positions", "data", "results"):
+                    if isinstance(out.get(key), list):
+                        rows = out[key]
+            if rows:
+                return rows
+            _time.sleep(1.5)
+        return self._positions_from_activities()
+
+    def _positions_from_activities(self) -> list[dict]:
+        """Net FILL activities per symbol into pseudo-positions. A symbol with
+        zero net qty is genuinely flat; nonzero nets are real holdings."""
+        try:
+            acts = self.mcp.call("get_account_activities", {"page_size": 200})
+        except McpError:
+            return []
+        items = acts if isinstance(acts, list) else (acts.get("result") or acts.get("activities") or [])
+        net: dict[str, float] = {}
+        for a in items:
+            if a.get("activity_type") != "FILL":
+                continue
+            sym = a.get("symbol")
+            qty = float(a.get("qty") or 0)
+            side = a.get("side") or ""
+            signed = -qty if side in ("sell", "sell_short") else qty
+            net[sym] = round(net.get(sym, 0.0) + signed, 6)
+        out = []
+        for sym, qty in net.items():
+            if abs(qty) < 1e-9:
+                continue
+            out.append({"symbol": sym, "qty": str(abs(int(qty))), "side": "short" if qty < 0 else "long", "source": "activities_net"})
+        return out
+
+    def holding(self, symbol: str) -> bool:
+        """Authoritative per-symbol check (get_open_position)."""
+        try:
+            self.mcp.call("get_open_position", {"symbol_or_asset_id": symbol})
+            return True
+        except McpError:
+            return False
 
     def orders(self, status: str = "open") -> list[dict]:
         props = self._schema_props("get_orders")

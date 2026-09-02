@@ -101,15 +101,17 @@ class Desk:
     def _repair(self, open_trades: list[dict], pos_symbols: set[str]) -> None:
         for t in open_trades:
             leg_symbols = {leg["symbol"] for leg in t["legs"]}
-            if leg_symbols and leg_symbols <= pos_symbols:
-                continue  # still held (at least partially): leave for management
-            if not (leg_symbols & pos_symbols):
-                serial = self.j.receipt(
-                    "state_repair",
-                    {"trade": t["trade_id"], "reason": "no position at reconcile: unfilled or removed"},
-                )
-                self.j.close_trade(t["trade_id"], 0.0, serial)
-                self.j.lesson(t["trade_id"], "Order was journaled open but never filled: the desk now verifies fills before journaling.", source="reconcile_repair")
+            # get_all_positions can lie (returns empty): confirm each leg with
+            # the authoritative per-symbol read before declaring anything gone
+            confirmed_missing = all(not self.ex.holding(s) for s in leg_symbols)
+            if not confirmed_missing:
+                continue
+            serial = self.j.receipt(
+                "state_repair",
+                {"trade": t["trade_id"], "reason": "no position at reconcile: unfilled or removed"},
+            )
+            self.j.close_trade(t["trade_id"], 0.0, serial)
+            self.j.lesson(t["trade_id"], "Order was journaled open but never filled: the desk now verifies fills before journaling.", source="reconcile_repair")
 
     # -- trade management ---------------------------------------------------
 
