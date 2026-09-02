@@ -97,7 +97,7 @@ def gate_evals(limit: int = Query(40, le=200)):
 def reconcile(limit: int = Query(20, le=100)):
     rows = journal().query(
         "SELECT serial AS id, ts, payload FROM receipts WHERE kind='reconcile' ORDER BY serial DESC LIMIT ?", (limit,)
-    ).fetchall()
+    )
     runs = []
     for r in rows:
         payload = _loads(r["payload"]) or {}

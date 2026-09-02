@@ -2229,3 +2229,366 @@ INFO:     127.0.0.1:56662 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56639 - "GET /api/state HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56662 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56639 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56639 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56678 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56662 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56662 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56678 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56662 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56704 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56678 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56704 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56678 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56717 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56717 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56718 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56704 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56730 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56678 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56730 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56678 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56678 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56753 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56730 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56730 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56753 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56730 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56767 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56753 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56767 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56753 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56753 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56767 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56767 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56767 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56767 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56767 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56794 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56876 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56876 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56876 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56893 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56898 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56898 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56899 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56893 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56893 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56917 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56917 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56917 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56932 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56932 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56853 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56955 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56932 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56955 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56932 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56932 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56978 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56955 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56978 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56955 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56955 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56995 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56978 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56995 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56978 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56995 - "GET /api/state HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 1281, in handle
+    await super().handle(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/routing.py", line 280, in handle
+    await self.app(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/fastapi/routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/anyio/to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/raphie/Documents/Hackathons/tape/agent/.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/src/tape/api.py", line 41, in state
+    snaps = j.equity_series(limit=1)
+  File "/Users/raphie/Documents/Hackathons/tape/agent/src/tape/journal.py", line 176, in equity_series
+    self._conn.execute(
+       ^^^^^^^^^^^^^^^^
+        "INSERT OR REPLACE INTO account_snapshots(ts,equity,cash,payload) VALUES(?,?,?,?)",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        (utc_now(), equity, cash, json.dumps(payload, default=str)[:20000]),
+    
+sqlite3.InterfaceError: bad parameter or other API misuse
+INFO:     127.0.0.1:56978 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57009 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56978 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57009 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56978 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57027 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57009 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57027 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57009 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57039 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57040 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57039 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57009 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57054 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57027 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57027 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57054 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57054 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57069 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57027 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57069 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57027 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57027 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57084 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57069 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57084 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57069 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57069 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57099 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57084 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57099 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57084 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57084 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57124 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57099 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57099 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57124 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57099 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57138 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57124 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57138 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57124 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57124 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57138 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57138 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57138 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57168 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57173 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57173 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57174 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57168 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57168 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57192 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57192 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57192 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57206 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57206 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57206 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57221 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57221 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57153 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57221 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57221 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57221 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57256 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57256 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57256 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57273 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57273 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57273 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57290 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57290 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57303 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57304 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57303 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57290 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57316 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57316 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57235 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57330 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57316 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57330 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57316 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57316 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57345 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57330 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57345 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57330 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57330 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57362 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57345 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57345 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57362 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57362 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57345 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57345 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57345 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57398 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57398 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57398 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57412 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57428 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57434 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57435 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57433 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57428 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57383 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57428 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57428 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57428 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57476 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57476 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57476 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57491 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57491 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57491 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57532 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57532 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57462 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57549 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57532 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57549 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57532 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57532 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57549 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57549 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57549 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57591 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57591 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57603 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57604 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57603 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57591 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57619 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57619 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57619 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57651 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57651 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57651 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57668 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57668 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57565 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57685 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57668 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57685 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57668 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57668 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57705 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57685 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57705 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57685 - "GET /api/state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57705 - "GET /api/equity HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57727 - "GET /api/receipts?limit=14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57685 - "GET /api/state HTTP/1.1" 200 OK
