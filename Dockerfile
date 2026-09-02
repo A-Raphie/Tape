@@ -19,4 +19,5 @@ COPY agent/data ./agent/data
 ENV TAPE_DB=/data/tape.db
 ENV PYTHONPATH=/app/agent/src
 EXPOSE 8000
-CMD ["sh", "-c", "mkdir -p /data && if [ ! -f /data/tape.db ]; then tar xzf agent/data/seed.tar.gz -C /data; fi && uvicorn tape.api:app --host 0.0.0.0 --port ${PORT:-8814} & exec python agent/scripts/run_desk.py"]
+# seed FIRST (foreground), then uvicorn in background, then the desk
+CMD ["sh", "-c", "mkdir -p /data && if [ ! -f /data/tape.db ]; then tar xzf agent/data/seed.tar.gz -C /data; fi && (uvicorn tape.api:app --host 0.0.0.0 --port ${PORT:-8814} &) && exec python agent/scripts/run_desk.py"]
