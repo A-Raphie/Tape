@@ -341,6 +341,13 @@ a {
   color: var(--text-secondary);
 }
 
+/* desktop 3-up; the 860px media query collapses it */
+.fd-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
 .fd-live {
   padding: 16px 18px;
   display: flex;
@@ -457,8 +464,22 @@ a {
 /* ---- sparkline ---- */
 
 .spark {
+  display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
+  min-width: 0;
+}
+
+/* grid items must be allowed to shrink below content min-content,
+   or one wide child dictates the whole document width on mobile */
+.fd-stats > *,
+.desk-stats > *,
+.fd-live,
+.fd-live > *,
+.desk-section .card,
+.spark-fig {
+  min-width: 0;
 }
 
 .spark-line {
