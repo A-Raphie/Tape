@@ -847,3 +847,253 @@ a {
     grid-column: 2;
   }
 }
+
+/* ---- app shell: topbar ---- */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 50;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  padding: 8px 14px;
+  border-radius: var(--radius-input);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 8px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.topnav {
+  display: flex;
+  gap: 4px;
+}
+
+.topnav-link {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 10px;
+  border-radius: var(--radius-input);
+}
+
+.topnav-link:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.topnav-active {
+  color: var(--text-primary);
+  background: linear-gradient(var(--accent), var(--accent)) left bottom / 100% 3px no-repeat;
+  border-radius: var(--radius-input) var(--radius-input) 0 0;
+}
+
+.topbar-status {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-equity {
+  color: var(--text-primary);
+}
+
+.shell-main {
+  min-height: calc(100vh - 220px);
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ---- page head ---- */
+
+.page-head {
+  padding: 26px 0 4px;
+}
+
+.page-title {
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0 0 6px;
+  text-wrap: balance;
+}
+
+.page-desc {
+  color: var(--text-secondary);
+  max-width: 62ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* ---- footer ---- */
+
+.footer {
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  margin-top: 40px;
+}
+
+.footer-grid {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 20px 40px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.4fr;
+  gap: 28px;
+}
+
+.footer-blurb {
+  max-width: 42ch;
+  margin: 8px 0 10px;
+}
+
+.footer-tag {
+  color: var(--status-pending);
+}
+
+.footer-links {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.footer-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+
+/* ---- skeleton ---- */
+
+.skeleton {
+  display: inline-block;
+  border-radius: var(--radius-input);
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--bg-overlay) 50%, var(--bg-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* ---- rules + reconcile + journal ---- */
+
+.rules-counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 18px 0 26px;
+}
+
+.rule-counter {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.glossary-row {
+  grid-template-columns: 260px 1fr;
+  align-items: baseline;
+}
+
+.reconcile-row {
+  grid-template-columns: 110px 130px 1fr;
+}
+
+.reconcile-how {
+  max-width: 68ch;
+  border-left: 3px solid var(--accent);
+  padding-left: 14px;
+}
+
+/* ---- front door tagline reveal ---- */
+
+.fd-reveal {
+  padding: 26px 0 6px;
+}
+
+.fd-reveal-text {
+  font-size: clamp(1.8rem, 4.4vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  max-width: 720px;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.fd-reveal-text span {
+  opacity: 0.25;
+  transition: opacity 700ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.fd-reveal-text.fd-reveal-on span {
+  opacity: 1;
+}
+
+.fd-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-inner {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .topbar-status {
+    margin-left: 0;
+  }
+
+  .rules-counters {
+    grid-template-columns: 1fr;
+  }
+
+  .glossary-row,
+  .reconcile-row {
+    grid-template-columns: 1fr;
+  }
+}

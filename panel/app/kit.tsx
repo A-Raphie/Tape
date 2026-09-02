@@ -77,6 +77,12 @@ export async function fetchReceipt(serial: number): Promise<Receipt | null> {
   }
 }
 
+/* --- Skeleton: shaped like the content it stands in for --- */
+
+export function Skeleton({ w = 120, h = 20 }: { w?: number; h?: number }) {
+  return <span className="skeleton" style={{ width: w, height: h }} aria-hidden="true" />;
+}
+
 /* --- TapeStrip: the agent's decisions, in order, append-only.
      Polls are housekeeping; the tape carries decisions. --- */
 
@@ -146,11 +152,27 @@ export function Sparkline({ points, height = 56 }: { points: { ts: string; equit
 
 /* --- StatTile --- */
 
-export function StatTile({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: "up" | "down" | "flat" }) {
+export function StatTile({
+  label,
+  value,
+  sub,
+  tone,
+  loading,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  tone?: "up" | "down" | "flat";
+  loading?: boolean;
+}) {
   return (
     <div className="card stat-tile">
       <div className="micro">{label}</div>
-      <div className={`number-lg stat-value ${tone ? `tone-${tone}` : ""}`}>{value}</div>
+      {loading ? (
+        <Skeleton w={140} h={28} />
+      ) : (
+        <div className={`number-lg stat-value ${tone ? `tone-${tone}` : ""}`}>{value}</div>
+      )}
       {sub ? <div className="caption">{sub}</div> : null}
     </div>
   );
