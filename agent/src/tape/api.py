@@ -43,8 +43,8 @@ def state():
     equity = snaps[-1]["equity"] if snaps else None
     cash = None
     if snaps:
-        row = j.query("SELECT cash FROM account_snapshots ORDER BY ts DESC LIMIT 1").fetchone()
-        cash = row["cash"] if row else None
+        rows = j.query("SELECT cash FROM account_snapshots ORDER BY ts DESC LIMIT 1")
+        cash = rows[0]["cash"] if rows else None
     from .market_hours import clock_now
 
     clock = clock_now()
@@ -119,10 +119,10 @@ def lessons():
 
 @app.get("/api/serial/{serial}")
 def one_receipt(serial: int):
-    row = journal().query("SELECT * FROM receipts WHERE serial=?", (serial,)).fetchone()
+    row = journal().query("SELECT * FROM receipts WHERE serial=?", (serial,))
     if not row:
         raise HTTPException(404, "no such receipt")
-    d = dict(row)
+    d = dict(row[0])
     d["payload"] = _loads(d["payload"])
     return d
 
