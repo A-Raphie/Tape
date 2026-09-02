@@ -22,9 +22,14 @@ const money = (v: number) => `$${v.toLocaleString(undefined, { minimumFractionDi
 const TAGLINE = "The tape doesn't lie. Now the agent can't either.";
 
 export default function FrontDoor() {
-  const { data: state, stale, failed } = useApi<State>("/api/state");
+  const { data: state, stale, failed, refresh } = useApi<State>("/api/state");
   const { data: equity } = useApi<{ points: { ts: string; equity: number }[] }>("/api/equity", 8000);
   const { data: receiptsRes } = useApi<{ receipts: import("./kit").Receipt[] }>("/api/receipts?limit=14", 4000);
+  const { data: lessonsRes } = useApi<{ lessons: { id: number; lesson: string; trade_id: string | null }[] }>(
+    "/api/lessons",
+    30000
+  );
+  const pinnedLesson = lessonsRes?.lessons?.[0];
 
   return (
     <main className="frontdoor">
@@ -61,9 +66,27 @@ export default function FrontDoor() {
         <div className="micro">
           {failed && !state ? "can't reach the journal" : stale ? "showing the last synced tape" : "live from the desk"}
         </div>
-        <TapeStrip receipts={receiptsRes?.receipts ?? []} />
+        {failed && !state ? (
+          <div>
+            <button className="btn btn-primary" onClick={refresh}>
+              Retry
+            </button>
+          </div>
+        ) : (
+          <TapeStrip receipts={receiptsRes?.receipts ?? []} />
+        )}
         <Sparkline points={equity?.points ?? []} />
       </section>
+
+      {pinnedLesson ? (
+        <section className="card fd-lesson">
+          <div className="micro">what the desk learned, graded against real fills</div>
+          <p className="fd-lesson-text">“{pinnedLesson.lesson}”</p>
+          <Link href="/journal/" className="caption">
+            all lessons in the journal{pinnedLesson.trade_id ? ` · from ${pinnedLesson.trade_id}` : ""}
+          </Link>
+        </section>
+      ) : null}
 
       <TaglineReveal />
 

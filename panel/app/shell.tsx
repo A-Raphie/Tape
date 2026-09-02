@@ -19,6 +19,7 @@ export const NAV = [
   { href: "/rules/", label: "Rules" },
   { href: "/reconcile/", label: "Reconcile" },
   { href: "/journal/", label: "Journal" },
+  { href: "/receipts/", label: "Receipts" },
 ];
 
 export function TopBar() {

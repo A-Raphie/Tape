@@ -34,10 +34,11 @@ export type Trade = {
   serial_close: number | null;
 };
 
-export function useApi<T>(path: string, intervalMs = 4000): { data: T | null; stale: boolean; failed: boolean } {
+export function useApi<T>(path: string, intervalMs = 4000): { data: T | null; stale: boolean; failed: boolean; refresh: () => void } {
   const [data, setData] = useState<T | null>(null);
   const [stale, setStale] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [tick, setTick] = useState(0);
   useEffect(() => {
     let alive = true;
     const load = async () => {
@@ -63,8 +64,8 @@ export function useApi<T>(path: string, intervalMs = 4000): { data: T | null; st
       alive = false;
       clearInterval(id);
     };
-  }, [path, intervalMs]);
-  return { data, stale, failed };
+  }, [path, intervalMs, tick]);
+  return { data, stale, failed, refresh: () => setTick((t) => t + 1) };
 }
 
 export async function fetchReceipt(serial: number): Promise<Receipt | null> {
@@ -237,16 +238,41 @@ export function ThesisCard({ title, body, kind }: { title: string; body: string;
 
 export function ReceiptModal({ receipt, onClose }: { receipt: Receipt | null; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const docRef = useRef<HTMLElement>(null);
+  const restoreRef = useRef<Element | null>(null);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     if (receipt) {
+      restoreRef.current = document.activeElement;
       window.addEventListener("keydown", onKey);
       closeRef.current?.focus();
+    } else if (restoreRef.current instanceof HTMLElement) {
+      restoreRef.current.focus();
+      restoreRef.current = null;
     }
     return () => window.removeEventListener("keydown", onKey);
   }, [receipt, onClose]);
+  useEffect(() => {
+    if (!receipt) return;
+    const trap = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !docRef.current) return;
+      const focusables = docRef.current.querySelectorAll("button, [href], details, summary");
+      if (!focusables.length) return;
+      const first = focusables[0] as HTMLElement;
+      const last = focusables[focusables.length - 1] as HTMLElement;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => document.removeEventListener("keydown", trap);
+  }, [receipt]);
   if (!receipt) return null;
   let payload: Record<string, unknown> = {};
   try {
@@ -275,6 +301,7 @@ export function ReceiptModal({ receipt, onClose }: { receipt: Receipt | null; on
   return (
     <div className="receipt-scrim" onClick={onClose}>
       <article
+        ref={docRef}
         className="card receipt-doc"
         onClick={(e) => e.stopPropagation()}
         role="dialog"

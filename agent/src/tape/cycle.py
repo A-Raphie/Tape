@@ -38,8 +38,13 @@ class Desk:
     # -- main --------------------------------------------------------------
 
     def run_forever(self, poll: int = POLL) -> None:
+        n = 0
         while True:
-            serial = self.j.receipt("cycle", {"at": utc_now()})
+            n += 1
+            serial = self.j.receipt("cycle", {"at": utc_now(), "n": n})
+            if n % 10 == 0:
+                # heartbeat: a gap in heartbeat serials makes a frozen desk detectable
+                self.j.receipt("heartbeat", {"cycles": n})
             try:
                 self.cycle()
             except Exception as exc:  # never die on one bad cycle

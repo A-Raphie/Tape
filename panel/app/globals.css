@@ -1097,3 +1097,38 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- front door lesson pin + lookup ---- */
+
+.fd-lesson {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fd-lesson-text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  color: var(--text-primary);
+}
+
+.lookup-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.lookup-input {
+  max-width: 220px;
+  font-family: var(--font-mono);
+}
+
+.lookup-link {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
