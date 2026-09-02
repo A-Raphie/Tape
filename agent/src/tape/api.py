@@ -96,7 +96,7 @@ def gate_evals(limit: int = Query(40, le=200)):
 @app.get("/api/reconcile")
 def reconcile(limit: int = Query(20, le=100)):
     rows = journal()._conn.execute(
-        "SELECT id,ts,payload FROM receipts WHERE kind='reconcile' ORDER BY serial DESC LIMIT ?", (limit,)
+        "SELECT serial AS id, ts, payload FROM receipts WHERE kind='reconcile' ORDER BY serial DESC LIMIT ?", (limit,)
     ).fetchall()
     runs = []
     for r in rows:

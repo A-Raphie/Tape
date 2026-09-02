@@ -163,7 +163,7 @@ export default function Desk() {
           <div className="card">
             <div className="row row-head-static">
               <span className={`stamp ${lastReconcile.clean ? "stamp-match" : "stamp-mismatch"}`}>{lastReconcile.clean ? "MATCH" : "MISMATCH"}</span>
-              <span className="caption">{lastReconcile.ts.slice(11, 16)} UTC</span>
+              <span className="caption">{lastReconcile.ts.slice(5, 16).replace("T", " ")} UTC</span>
               <span className="caption">{lastReconcile.diffs.length} diffs on the latest pass</span>
             </div>
             {lastReconcile.diffs.map((d, i) => (
@@ -211,7 +211,7 @@ function BlockCard({ gate, onSerial }: { gate: GateEval; onSerial: (serial: numb
           #{gate.serial}
         </button>
         <span className="caption">
-          {gate.ts.slice(11, 16)} UTC · {p.underlying ?? "?"} {p.short_strike != null ? p.short_strike : ""} credit {p.credit != null ? money(p.credit) : "?"}
+          {gate.ts.slice(5, 16).replace("T", " ")} UTC · {p.underlying ?? "?"} {p.short_strike != null ? p.short_strike : ""} credit {p.credit != null ? money(p.credit) : "?"}
         </span>
         <span className="stamp stamp-error">BLOCKED</span>
         <span className="mono caption block-cand">{p.candidate_id ?? ""}</span>
