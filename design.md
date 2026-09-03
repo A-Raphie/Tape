@@ -31,3 +31,7 @@ SQLite (agent-written) surfaced by FastAPI sidecar: `account` snapshot (equity s
 
 ## Copy rules
 No em/en dashes anywhere (grep gate). Plain verbs, no jargon-first copy (explain-to-a-friend lesson). Receipts carry physical weight: serials in mono microcopy, timestamps UTC, perforation detail.
+
+## Audit trend
+- Sep 2 (pre-rebuild, ui-ux-audit): 24/40 Acceptable — zero information gradient, reconcile/tape spam, API-failure masks, receipts void, mobile nav clip, tagline ×3.
+- Sep 3 (post burn-down, fresh-eyes re-score): 35/40 Good (top of band) — heuristics: status 4, real-world 3, control 3, consistency 4, prevention 4, recognition 3, flexibility 3, aesthetic 3, recovery 4, docs 4. Remaining accepted: thesis-on-serial dead caption (make link), ?serial= deep links, Rules feed gate-diversity ordering, mobile nav affordance. Receipt-counter regression (14,092→10,339) was the /data reseed bug — fixed permanently with a Railway volume (deploy acid test passed); counter monotonic since.
