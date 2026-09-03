@@ -4,7 +4,7 @@
    full gate glossary in plain English. */
 
 import { useState } from "react";
-import { fetchReceipt, gateHuman, GateList, ReceiptModal, useApi, type Receipt } from "../kit";
+import { fetchReceipt, gateHuman, GateList, ReceiptModal, StatTile, useApi, type Receipt } from "../kit";
 
 type GateEval = {
   id: number;
@@ -32,7 +32,7 @@ const GLOSSARY: { gate: string; name: string; plain: string }[] = [
 ];
 
 export default function Rules() {
-  const { data: gatesRes } = useApi<{ gate_evals: GateEval[] }>("/api/gate_evals");
+  const { data: gatesRes, failed, refresh } = useApi<{ gate_evals: GateEval[] }>("/api/gate_evals");
   const [openReceipt, setOpenReceipt] = useState<Receipt | null>(null);
   const evals = gatesRes?.gate_evals ?? [];
   const blocksAll = evals.filter((g) => !g.approved);
@@ -58,6 +58,15 @@ export default function Rules() {
 
   return (
     <div className="page">
+      {failed ? (
+        <div className="row api-fail">
+          <span className="stamp stamp-error">JOURNAL UNREACHABLE</span>
+          <span className="caption">showing nothing rather than guessing ·</span>
+          <button className="btn btn-ghost api-retry" onClick={refresh}>
+            Retry
+          </button>
+        </div>
+      ) : null}
       <header className="page-head">
         <h1 className="page-title">Rules</h1>
         <p className="page-desc">
@@ -66,18 +75,9 @@ export default function Rules() {
       </header>
 
       <section className="rules-counters">
-        <div className="card rule-counter">
-          <span className="number-lg">{evals.length}</span>
-          <span className="micro">evaluations</span>
-        </div>
-        <div className="card rule-counter">
-          <span className="number-lg tone-up">{approved.length}</span>
-          <span className="micro">approved</span>
-        </div>
-        <div className="card rule-counter">
-          <span className="number-lg tone-down">{blocksAll.length}</span>
-          <span className="micro">blocked</span>
-        </div>
+        <StatTile label="Evaluations" value={String(evals.length)} sub="gate runs on record" />
+        <StatTile label="Approved" value={String(approved.length)} sub="cleared every gate" tone="up" />
+        <StatTile label="Blocked" value={String(blocksAll.length)} sub="refused with reasons" tone="down" />
       </section>
 
       <section className="desk-section">
@@ -141,7 +141,7 @@ function BlockCard({ gate, onSerial }: { gate: GateEval; onSerial: (serial: numb
       <GateList gates={shown.map(gateHuman)} />
       <div className="row gate-toggle-row">
         <button className="btn btn-ghost gate-toggle" onClick={() => setShowAll(!showAll)}>
-          {showAll ? "show failures only" : `show all ${gate.reasons.length} gates`}
+          {showAll ? "▲ show failures only" : `▼ show all ${gate.reasons.length} gates`}
         </button>
       </div>
     </div>

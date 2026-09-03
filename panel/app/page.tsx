@@ -39,7 +39,6 @@ export default function FrontDoor() {
           Every order it places ships a serial-numbered receipt: the analyst's thesis, the risk desk's gate-by-gate
           evaluation, the raw MCP call, the fill. Then a reconcile pass proves the journal matches the account.
         </p>
-        <p className="fd-claim">The tape doesn't lie. Now the agent can't either.</p>
       </section>
 
       <section className="fd-stats">

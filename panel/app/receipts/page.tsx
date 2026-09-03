@@ -4,16 +4,17 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ReceiptModal, type Receipt } from "../kit";
+import { fetchReceipt, ReceiptModal, useApi, type Receipt } from "../kit";
 
 export default function Receipts() {
+  const { data: recentRes, failed, refresh } = useApi<{ receipts: Receipt[] }>("/api/receipts?limit=12", 30000);
   const [value, setValue] = useState("");
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "missing">("idle");
   const [queried, setQueried] = useState<number | null>(null);
 
   const lookup = () => {
-    const n = parseInt(value.trim(), 10);
+    const n = parseInt(value.trim().replace(/[^0-9]/g, ""), 10);
     if (!Number.isFinite(n) || n <= 0) {
       setStatus("missing");
       setQueried(n || null);
@@ -21,11 +22,10 @@ export default function Receipts() {
     }
     setStatus("loading");
     setQueried(n);
-    fetch(`https://tape.up.railway.app/api/serial/${n}`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
+    fetchReceipt(n)
       .then((data) => {
         if (data) {
-          setReceipt(data as Receipt);
+          setReceipt(data);
           setStatus("idle");
         } else {
           setReceipt(null);
@@ -45,6 +45,15 @@ export default function Receipts() {
         </p>
       </header>
 
+      {failed ? (
+        <div className="row api-fail">
+          <span className="stamp stamp-error">JOURNAL UNREACHABLE</span>
+          <span className="caption">showing nothing rather than guessing ·</span>
+          <button className="btn btn-ghost api-retry" onClick={refresh}>
+            Retry
+          </button>
+        </div>
+      ) : null}
       <section className="desk-section">
         <form
           className="lookup-row"
@@ -72,6 +81,29 @@ export default function Receipts() {
             every row and chip.
           </p>
         ) : null}
+        <section className="desk-section">
+          <h2 className="section-title">Newest on the tape</h2>
+          {recentRes?.receipts?.length ? (
+            <div className="card">
+              {recentRes.receipts.slice(0, 10).map((r) => (
+                <button
+                  key={r.serial}
+                  className="row row-btn lookup-row-btn"
+                  onClick={() => {
+                    setReceipt(r);
+                  }}
+                >
+                  <span className="serial">#{r.serial}</span>
+                  <span className="row-structure">{r.kind}</span>
+                  <span className="caption">{r.ts.slice(5, 16).replace("T", " ")} UTC</span>
+                  <span className={`stamp ${r.ok ? "stamp-neutral" : "stamp-error"}`}>{r.ok ? "OK" : "FAILED"}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="caption empty-note">The newest receipts land here as the desk acts.</p>
+          )}
+        </section>
         <p className="caption">
           Fresh from today's tape: <Link href="/desk/" className="lookup-link">the desk blotter</Link> lists the newest
           serials · source of record: the journal on{" "}

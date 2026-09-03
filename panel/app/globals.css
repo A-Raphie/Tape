@@ -812,6 +812,22 @@ a {
 /* ---- responsive ---- */
 
 @media (max-width: 860px) {
+  .topnav {
+    width: 100%;
+    order: 3;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .topnav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reconcile-row .stamp,
+  .reconcile-row .caption {
+    justify-self: start;
+  }
+
   .fd-stats,
   .desk-stats {
     grid-template-columns: 1fr;
@@ -1131,4 +1147,28 @@ a {
   text-decoration: underline;
   text-decoration-color: var(--accent);
   text-decoration-thickness: 2px;
+}
+
+/* ---- audit fixes: unified scales + api failure ---- */
+
+.api-fail {
+  grid-template-columns: auto 1fr auto;
+  border: 1px solid var(--status-error-soft);
+  background: var(--status-error-soft);
+  border-radius: var(--radius-card);
+  margin-bottom: 14px;
+}
+
+.api-retry {
+  min-height: 32px;
+  font-size: 0.85rem;
+}
+
+.lookup-row-btn {
+  grid-template-columns: 84px 1fr 150px 90px;
+}
+
+.journal-grades-row,
+.glossary-row {
+  align-items: baseline;
 }

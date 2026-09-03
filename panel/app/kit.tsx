@@ -87,15 +87,21 @@ export function Skeleton({ w = 120, h = 20 }: { w?: number; h?: number }) {
 /* --- TapeStrip: the agent's decisions, in order, append-only.
      Polls are housekeeping; the tape carries decisions. --- */
 
-const TAPE_KINDS = new Set(["trade_opened", "trade_closed", "close_intent", "entry_proposal", "flatten_all", "halt", "reconcile", "scribe_grade"]);
+const TAPE_KINDS = new Set(["trade_opened", "trade_closed", "close_intent", "entry_proposal", "flatten_all", "halt", "order_unfilled", "state_repair"]);
 
 export function TapeStrip({ receipts, onSerial }: { receipts: Receipt[]; onSerial?: (serial: number, receipt: Receipt | null) => void }) {
   const calls = receipts.filter((r) => TAPE_KINDS.has(r.kind) || (r.kind === "mcp_call" && (r.tool ?? "").includes("order"))).slice(0, 14);
-  if (!calls.length) {
+  const latestReconcile = [...receipts].reverse().find((r) => r.kind === "reconcile");
+  if (!calls.length && !latestReconcile) {
     return <div className="micro tape-empty">no desk decisions yet · the tape prints the first trade here</div>;
   }
   return (
     <div className="tape-strip" aria-label="append-only action tape">
+      {!calls.length && latestReconcile ? (
+        <span className="tape-chip">
+          <span className="serial">#{latestReconcile.serial}</span> reconcile · checks pass {latestReconcile.ts.slice(11, 16)} UTC
+        </span>
+      ) : null}
       {calls.map((r) => {
         const label = (
           <>
@@ -189,6 +195,8 @@ export function gateHuman(g: { gate: string; pass: boolean; value: unknown }): {
     if ("max_loss" in o && "cap" in o) detail = `$${Number(o.max_loss).toFixed(0)} risked vs $${Number(o.cap).toFixed(0)} allowed`;
     else if ("aggregate" in o && "cap" in o) detail = `$${Number(o.aggregate).toFixed(0)} open vs $${Number(o.cap).toFixed(0)} allowed`;
     else if ("open" in o && "cap" in o) detail = `${o.open} open vs ${o.cap} allowed`;
+    else if ("minutes_to_close" in o) detail = `${o.minutes_to_close} min to close`;
+    else if ("daily_realized_pnl" in o) detail = `day P&L $${Number(o.daily_realized_pnl).toFixed(0)}`;
     else detail = JSON.stringify(v);
   } else if (typeof v === "number") {
     detail =
@@ -215,20 +223,6 @@ export function GateList({ gates }: { gates: { name: string; detail: string; pas
           <span className="caption gate-value">{g.detail}</span>
         </div>
       ))}
-    </div>
-  );
-}
-
-/* --- ThesisCard: analyst verdict with thesis or reject reason --- */
-
-export function ThesisCard({ title, body, kind }: { title: string; body: string; kind: "pick" | "reject" }) {
-  return (
-    <div className="card thesis-card">
-      <div className="thesis-head">
-        <span className={`stamp ${kind === "pick" ? "stamp-pending" : "stamp-neutral"}`}>{kind === "pick" ? "PICK" : "REJECT"}</span>
-        <span className="mono caption">{title}</span>
-      </div>
-      <p className="thesis-body">{body}</p>
     </div>
   );
 }

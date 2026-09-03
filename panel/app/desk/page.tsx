@@ -9,7 +9,7 @@ const money = (v: number) =>
   `$${v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 export default function Desk() {
-  const { data: state } = useApi<{
+  const { data: state, failed, refresh } = useApi<{
     equity: number | null;
     cash: number | null;
     receipts: number;
@@ -18,7 +18,7 @@ export default function Desk() {
   }>("/api/state");
   const { data: equity } = useApi<{ points: { ts: string; equity: number }[] }>("/api/equity", 8000);
   const { data: receiptsRes } = useApi<{ receipts: Receipt[] }>("/api/receipts?limit=40");
-  const { data: tradesRes } = useApi<{ trades: Trade[] }>("/api/trades");
+  const { data: tradesRes, failed: tradesFailed, refresh: retryTrades } = useApi<{ trades: Trade[] }>("/api/trades");
   const [openReceipt, setOpenReceipt] = useState<Receipt | null>(null);
 
   const receipts = receiptsRes?.receipts ?? [];
@@ -54,6 +54,15 @@ export default function Desk() {
 
   return (
     <div className="page">
+      {failed ? (
+        <div className="row api-fail">
+          <span className="stamp stamp-error">JOURNAL UNREACHABLE</span>
+          <span className="caption">showing nothing rather than guessing ·</span>
+          <button className="btn btn-ghost api-retry" onClick={refresh}>
+            Retry
+          </button>
+        </div>
+      ) : null}
       <header className="page-head">
         <h1 className="page-title">The desk</h1>
         <p className="page-desc">Live blotter of the agent: what it holds, what it closed, every decision in order.</p>

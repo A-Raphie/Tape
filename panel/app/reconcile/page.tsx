@@ -8,10 +8,15 @@ import { useApi } from "../kit";
 type ReconcileRun = { id: number; ts: string; clean: boolean; diffs: { type: string; symbol: string }[] };
 
 export default function Reconcile() {
-  const { data: reconcileRes } = useApi<{ runs: ReconcileRun[] }>("/api/reconcile", 6000);
+  const { data: reconcileRes, failed, refresh } = useApi<{ runs: ReconcileRun[] }>("/api/reconcile", 6000);
   const runs = reconcileRes?.runs ?? [];
   const latest = runs[0];
-  const mismatches = runs.filter((r) => !r.clean).length;
+  let streak = 0;
+  for (const r of runs) {
+    if (r.clean) streak += 1;
+    else break;
+  }
+  const mismatchTotal = runs.filter((r) => !r.clean).length;
 
   return (
     <div className="page">
@@ -23,9 +28,25 @@ export default function Reconcile() {
         </p>
       </header>
 
+      {failed ? (
+        <div className="row api-fail">
+          <span className="stamp stamp-error">JOURNAL UNREACHABLE</span>
+          <span className="caption">showing nothing rather than guessing ·</span>
+          <button className="btn btn-ghost api-retry" onClick={refresh}>
+            Retry
+          </button>
+        </div>
+      ) : null}
       {latest ? (
         <section className="desk-section">
           <div className="card">
+            <div className="row row-head-static">
+              <span className="number-lg">{streak}</span>
+              <span className="caption">
+                consecutive clean passes · {mismatchTotal} mismatch pass(es) in the last {runs.length}, each named and
+                repaired below in history
+              </span>
+            </div>
             <div className="row row-head-static">
               <span className={`stamp ${latest.clean ? "stamp-match" : "stamp-mismatch"}`}>
                 {latest.clean ? "MATCH" : "MISMATCH"}
