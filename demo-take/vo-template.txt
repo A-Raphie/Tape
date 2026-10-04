@@ -1,0 +1,13 @@
+On Friday morning, an AI agent got a hundred thousand dollars and permission to trade options. Nobody watches it. Nobody approves its trades. So the only question that matters: when it acts, can you prove what it did? This is Tape. And the answer is on screen.
+
+This is its blotter, live. Every chip on the tape is a decision it made by itself: scans, proposals, fills. It is holding {open_count} {open_word} right now, each capped at about two and a half percent of the account. And here is the part competitors won't show you: the losses, in red, next to the wins. {today_pnl}, and every dollar of it is explained on screen. The paper account number is on screen too.
+
+Click any fill. The receipt unfolds. What happened, in one sentence. Why the agent wanted it: the analyst writes its own reasoning, citing the delta it saw. The trade itself, in English: sell the lower call, buy the one a dollar higher. Cash collected now. Worst case at expiry. No dashboard can fake this, because every number comes from the journal, and the journal is checked against the broker.
+
+The model picks trades. It is never allowed to size them, and never allowed to weaken the rules. Thirteen gates run in code before any order exists: size caps, expiry limits, a four percent daily kill switch. {blocked_count} proposals died here, and every block shows the exact gate that killed it.
+
+Now the part we are proudest of. On day two, this desk froze for an hour. Nobody was watching. But the reconcile table caught it in public: six places where the diary disagreed with the broker. The agent repaired its own journal, retired the phantom trades, and wrote the lesson down. The tape does not lie, especially about itself.
+
+Every night it grades its own closed trades. {lesson_count} lessons from real fills: avoid high credit on one day spreads. Repeat low I V S P Y bear calls, they worked. An agent that grades itself in public is an agent you can start to trust.
+
+{receipt_count} receipts, every one can be looked up by number. The live desk, the source, and the paper account are on screen right now. Tape: the trading agent that shows its tape.

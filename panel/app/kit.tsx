@@ -41,6 +41,8 @@ export function useApi<T>(path: string, intervalMs = 4000): { data: T | null; st
   const [tick, setTick] = useState(0);
   useEffect(() => {
     let alive = true;
+    // Poll only while the tab is visible; hidden tabs burn edge requests (floor 60s, was 4s)
+    const period = Math.max(intervalMs, 60000);
     const load = async () => {
       try {
         const res = await fetch(`${API}${path}`, { cache: "no-store" });
@@ -59,7 +61,9 @@ export function useApi<T>(path: string, intervalMs = 4000): { data: T | null; st
       }
     };
     load();
-    const id = setInterval(load, intervalMs);
+    const id = setInterval(() => {
+      if (document.visibilityState === "visible") load();
+    }, period);
     return () => {
       alive = false;
       clearInterval(id);

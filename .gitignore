@@ -13,3 +13,4 @@ out/
 # local key files, never tracked
 .env.dev
 agent/.env.dev
+agent/.env.blown-20250903

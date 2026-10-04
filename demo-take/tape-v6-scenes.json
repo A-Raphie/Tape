@@ -1,0 +1,812 @@
+{
+  "driver": "http://127.0.0.1:9333",
+  "cdp": "http://127.0.0.1:9222",
+  "voDir": "/tmp/tape-v6/beats",
+  "outDir": "/tmp/tape-v6",
+  "final": "/Users/raphie/Documents/Hackathons/tape/demo-take/tape-demo-v6.mp4",
+  "browserProcess": "Google Chrome",
+  "locators": {
+    "brand": "[...document.querySelectorAll(\"a\")].find(a=>a.textContent.trim()===\"Tape\"&&a.getBoundingClientRect().y<60)",
+    "deskEquityStrip": "[...document.querySelectorAll(\"div,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>500&&r.height<400&&r.y<500&&/equity/i.test(e.textContent)&&/cash/i.test(e.textContent);})",
+    "deskRow915": "[...document.querySelectorAll(\"a,button,tr,[role=button],div,li\")].find(e=>e.textContent.trim().startsWith(\"#915\")&&e.getBoundingClientRect().width>700&&e.getBoundingClientRect().height<70)",
+    "lookupInput": "document.querySelector('input[placeholder*=\"445\"], input[type=\"text\"]')",
+    "openReceiptBtn": "[...document.querySelectorAll(\"button\")].find(b=>/open receipt/i.test(b.textContent))",
+    "modalClose": "[...document.querySelectorAll(\"button\")].find(b=>b.textContent.trim().toLowerCase()===\"close\"&&b.getBoundingClientRect().y<400)",
+    "rulesCardEvals": "[...document.querySelectorAll(\"div,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>250&&r.width<420&&r.height>80&&r.height<200&&r.y<400&&/^Evaluations/.test(e.textContent.trim());})",
+    "rulesCardApproved": "[...document.querySelectorAll(\"div,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>250&&r.width<420&&r.height>80&&r.height<200&&r.y<400&&/^Approved/.test(e.textContent.trim());})",
+    "rulesCardBlocked": "[...document.querySelectorAll(\"div,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>250&&r.width<420&&r.height>80&&r.height<200&&r.y<400&&/^Blocked/.test(e.textContent.trim());})",
+    "rulesFirstBlock": "[...document.querySelectorAll(\"a,button,tr,[role=button],div,li\")].find(e=>e.textContent.trim().startsWith(\"#4101\")&&e.getBoundingClientRect().width>700&&e.getBoundingClientRect().height<70)",
+    "gatesExpander": "[...document.querySelectorAll(\"button,[role=button]\")].find(e=>/show all 13 gates/.test(e.textContent))",
+    "gateSizeCap": "[...document.querySelectorAll(\"div,tr,li,span\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>500&&r.height>25&&r.height<80&&/^PASSSize cap/.test(e.textContent.trim());})",
+    "gateDailyLoss": "[...document.querySelectorAll(\"div,tr,li,span\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>500&&r.height>25&&r.height<80&&/^PASSDaily loss limit/.test(e.textContent.trim());})",
+    "reconCleanStrip": "[...document.querySelectorAll(\"div,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>600&&/consecutive clean passes/.test(e.textContent);})",
+    "reconFirstMatch": "[...document.querySelectorAll(\"div,tr,li,span\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>600&&r.height>25&&r.height<70&&/^MATCH/.test(e.textContent.trim());})",
+    "reconHistory": "[...document.querySelectorAll(\"div,tr,li,span,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>600&&r.height>40&&r.height<300&&/(mismatch|repaired|phantom|froze|disagree)/i.test(e.textContent)&&e.textContent.length<800;})",
+    "lessonT2179": "[...document.querySelectorAll(\"div,tr,li,span,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>600&&r.height>40&&r.height<200&&/^T-2179/.test(e.textContent.trim());})",
+    "lessonT3113": "[...document.querySelectorAll(\"div,tr,li,span,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>600&&r.height>40&&r.height<200&&/^T-3113/.test(e.textContent.trim());})",
+    "lessonT0815": "[...document.querySelectorAll(\"div,tr,li,span,section\")].find(e=>{const r=e.getBoundingClientRect(); return r.width>600&&r.height>40&&r.height<200&&/^T-0815/.test(e.textContent.trim());})",
+    "receiptHappened": "[...document.querySelectorAll(\"div,span,p,h1,h2,h3,h4,dt\")].filter(e=>{const t=e.textContent; const r=e.getBoundingClientRect(); return /what happened/i.test(t)&&t.length<60&&r.height>0&&r.height<60;}).sort((a,b)=>a.textContent.length-b.textContent.length)[0]",
+    "receiptReasoning": "[...document.querySelectorAll(\"div,span,p,h1,h2,h3,h4,dt\")].filter(e=>{const t=e.textContent; const r=e.getBoundingClientRect(); return /analyst.{0,4}s reasoning|analyst/i.test(t)&&t.length<60&&r.height>0&&r.height<60;}).sort((a,b)=>a.textContent.length-b.textContent.length)[0]",
+    "receiptTrade": "[...document.querySelectorAll(\"div,span,p,h1,h2,h3,h4,dt\")].filter(e=>{const t=e.textContent; const r=e.getBoundingClientRect(); return /^the trade/i.test(t)&&t.length<60&&r.height>0&&r.height<60;}).sort((a,b)=>a.textContent.length-b.textContent.length)[0]",
+    "receiptCash": "[...document.querySelectorAll(\"div,span,p,h1,h2,h3,h4,dt\")].filter(e=>{const t=e.textContent; const r=e.getBoundingClientRect(); return /cash collected now/i.test(t)&&t.length<60&&r.height>0&&r.height<60;}).sort((a,b)=>a.textContent.length-b.textContent.length)[0]",
+    "receiptWorst": "[...document.querySelectorAll(\"div,span,p,h1,h2,h3,h4,dt\")].filter(e=>{const t=e.textContent; const r=e.getBoundingClientRect(); return /worst case at expiry/i.test(t)&&t.length<60&&r.height>0&&r.height<60;}).sort((a,b)=>a.textContent.length-b.textContent.length)[0]",
+    "receiptRules": "[...document.querySelectorAll(\"div,span,p,h1,h2,h3,h4,dt\")].filter(e=>{const t=e.textContent; const r=e.getBoundingClientRect(); return /rules it had to pass/i.test(t)&&t.length<60&&r.height>0&&r.height<60;}).sort((a,b)=>a.textContent.length-b.textContent.length)[0]",
+    "footerBlotter": "[...document.querySelectorAll(\"a\")].find(a=>/the desk blotter/.test(a.textContent))",
+    "footerGithub": "[...document.querySelectorAll(\"a\")].find(a=>a.textContent.trim()===\"GitHub\")",
+    "footerAlpaca": "[...document.querySelectorAll(\"a\")].find(a=>/Alpaca paper trading/.test(a.textContent))",
+    "receiptRow": "[...document.querySelectorAll(\"a,button,tr,[role=button],div,li\")].find(e=>{const r=e.getBoundingClientRect(); const t=e.textContent.trim(); return r.width>600&&r.height>25&&r.height<70&&/^#\\d+\\s*(reconcile|mcp_call|cycle|trade|order)/.test(t);})"
+  },
+  "scenes": {
+    "1": {
+      "name": "hero",
+      "prep": [
+        {
+          "t": "goto",
+          "url": "https://tape.up.railway.app/"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 627,
+          "y": 141
+        }
+      ],
+      "actions": [
+        {
+          "t": "cmove",
+          "x": 700,
+          "y": 150
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 627,
+          "y": 249
+        },
+        {
+          "t": "hold",
+          "ms": 2200
+        },
+        {
+          "t": "cmove",
+          "x": 490,
+          "y": 386
+        },
+        {
+          "t": "hold",
+          "ms": 2500
+        },
+        {
+          "t": "cmove",
+          "x": 1220,
+          "y": 386
+        },
+        {
+          "t": "hold",
+          "ms": 2000
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 603
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 600,
+          "y": 620
+        },
+        {
+          "t": "hold",
+          "ms": 1200
+        },
+        {
+          "t": "cmove",
+          "x": 1300,
+          "y": 610
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 335,
+          "y": 28
+        },
+        {
+          "t": "hold",
+          "ms": 2000
+        }
+      ]
+    },
+    "2": {
+      "name": "desk-blotter",
+      "prep": [
+        {
+          "t": "goto",
+          "url": "https://tape.up.railway.app/"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 335,
+          "y": 28
+        }
+      ],
+      "actions": [
+        {
+          "t": "cmove",
+          "x": 406,
+          "y": 28
+        },
+        {
+          "t": "hold",
+          "ms": 500
+        },
+        {
+          "t": "navClick",
+          "label": "Desk"
+        },
+        {
+          "t": "waitText",
+          "re": "The desk"
+        },
+        {
+          "t": "hold",
+          "ms": 2200
+        },
+        {
+          "t": "hoverJs",
+          "find": "h1"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 265
+        },
+        {
+          "t": "hold",
+          "ms": 2800
+        },
+        {
+          "t": "hoverJs",
+          "find": "deskEquityStrip"
+        },
+        {
+          "t": "hold",
+          "ms": 2200
+        },
+        {
+          "t": "row",
+          "prefix": "#915"
+        },
+        {
+          "t": "hold",
+          "ms": 2400
+        },
+        {
+          "t": "cmove",
+          "x": 700,
+          "y": 581
+        },
+        {
+          "t": "hold",
+          "ms": 1600
+        },
+        {
+          "t": "cmove",
+          "x": 1050,
+          "y": 630
+        },
+        {
+          "t": "hold",
+          "ms": 2800
+        },
+        {
+          "t": "cmove",
+          "x": 700,
+          "y": 679
+        },
+        {
+          "t": "hold",
+          "ms": 1600
+        },
+        {
+          "t": "hoverJs",
+          "find": "deskEquityStrip"
+        },
+        {
+          "t": "hold",
+          "ms": 2400
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 560
+        },
+        {
+          "t": "hold",
+          "ms": 800
+        }
+      ]
+    },
+    "3": {
+      "name": "receipt-unfolds",
+      "prep": [
+        {
+          "t": "goto",
+          "url": "https://tape.up.railway.app/desk/"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 560
+        }
+      ],
+      "actions": [
+        {
+          "t": "hoverJs",
+          "find": "deskRow915"
+        },
+        {
+          "t": "hold",
+          "ms": 600
+        },
+        {
+          "t": "clickJs",
+          "find": "deskRow915"
+        },
+        {
+          "t": "waitText",
+          "re": "RECEIPT #915"
+        },
+        {
+          "t": "hold",
+          "ms": 1800
+        },
+        {
+          "t": "hoverJs",
+          "find": "receiptHappened"
+        },
+        {
+          "t": "hold",
+          "ms": 2000
+        },
+        {
+          "t": "clickJs",
+          "find": "modalClose"
+        },
+        {
+          "t": "hold",
+          "ms": 900
+        },
+        {
+          "t": "navClick",
+          "label": "Receipts"
+        },
+        {
+          "t": "waitText",
+          "re": "Newest on the tape"
+        },
+        {
+          "t": "hoverJs",
+          "find": "lookupInput"
+        },
+        {
+          "t": "hold",
+          "ms": 500
+        },
+        {
+          "t": "clickJs",
+          "find": "lookupInput"
+        },
+        {
+          "t": "typeJs",
+          "find": "lookupInput",
+          "text": "445",
+          "gapMs": 260
+        },
+        {
+          "t": "hold",
+          "ms": 600
+        },
+        {
+          "t": "clickJs",
+          "find": "openReceiptBtn"
+        },
+        {
+          "t": "waitText",
+          "re": "RECEIPT #445"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "hoverJs",
+          "find": "receiptReasoning"
+        },
+        {
+          "t": "hold",
+          "ms": 2600
+        },
+        {
+          "t": "hoverJs",
+          "find": "receiptTrade"
+        },
+        {
+          "t": "hold",
+          "ms": 2200
+        },
+        {
+          "t": "hoverJs",
+          "find": "receiptCash"
+        },
+        {
+          "t": "hold",
+          "ms": 1800
+        },
+        {
+          "t": "hoverJs",
+          "find": "receiptWorst"
+        },
+        {
+          "t": "hold",
+          "ms": 1800
+        },
+        {
+          "t": "hoverJs",
+          "find": "receiptRules"
+        },
+        {
+          "t": "hold",
+          "ms": 2200
+        }
+      ]
+    },
+    "4": {
+      "name": "rules-gates",
+      "prep": [
+        {
+          "t": "goto",
+          "url": "https://tape.up.railway.app/receipts/"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "typeJs",
+          "find": "lookupInput",
+          "text": "445",
+          "gapMs": 150
+        },
+        {
+          "t": "clickJs",
+          "find": "openReceiptBtn"
+        },
+        {
+          "t": "waitText",
+          "re": "RECEIPT #445"
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 620
+        }
+      ],
+      "actions": [
+        {
+          "t": "clickJs",
+          "find": "modalClose"
+        },
+        {
+          "t": "hold",
+          "ms": 700
+        },
+        {
+          "t": "cmove",
+          "x": 469,
+          "y": 28
+        },
+        {
+          "t": "navClick",
+          "label": "Rules"
+        },
+        {
+          "t": "waitText",
+          "re": "gate runs on record"
+        },
+        {
+          "t": "hold",
+          "ms": 800
+        },
+        {
+          "t": "hoverJs",
+          "find": "rulesCardEvals"
+        },
+        {
+          "t": "hold",
+          "ms": 1800
+        },
+        {
+          "t": "hoverJs",
+          "find": "rulesCardApproved"
+        },
+        {
+          "t": "hold",
+          "ms": 800
+        },
+        {
+          "t": "hoverJs",
+          "find": "rulesCardBlocked"
+        },
+        {
+          "t": "hold",
+          "ms": 1400
+        },
+        {
+          "t": "row",
+          "prefix": "#4101"
+        },
+        {
+          "t": "hold",
+          "ms": 1400
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 455
+        },
+        {
+          "t": "hold",
+          "ms": 1800
+        },
+        {
+          "t": "clickJs",
+          "find": "gatesExpander"
+        },
+        {
+          "t": "waitText",
+          "re": "Size cap"
+        },
+        {
+          "t": "hold",
+          "ms": 800
+        },
+        {
+          "t": "hoverJs",
+          "find": "gateSizeCap"
+        },
+        {
+          "t": "hold",
+          "ms": 1600
+        },
+        {
+          "t": "hoverJs",
+          "find": "gateDailyLoss"
+        },
+        {
+          "t": "hold",
+          "ms": 1200
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 800
+        },
+        {
+          "t": "hold",
+          "ms": 400
+        }
+      ]
+    },
+    "5": {
+      "name": "reconcile",
+      "prep": [
+        {
+          "t": "goto",
+          "url": "https://tape.up.railway.app/rules/"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 800
+        }
+      ],
+      "actions": [
+        {
+          "t": "cmove",
+          "x": 548,
+          "y": 28
+        },
+        {
+          "t": "navClick",
+          "label": "Reconcile"
+        },
+        {
+          "t": "waitText",
+          "re": "consecutive clean passes"
+        },
+        {
+          "t": "hold",
+          "ms": 1200
+        },
+        {
+          "t": "hoverJs",
+          "find": "reconCleanStrip"
+        },
+        {
+          "t": "hold",
+          "ms": 3800
+        },
+        {
+          "t": "hoverJs",
+          "find": "reconFirstMatch"
+        },
+        {
+          "t": "hold",
+          "ms": 2600
+        },
+        {
+          "t": "cmove",
+          "x": 900,
+          "y": 376
+        },
+        {
+          "t": "hold",
+          "ms": 1200
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 423
+        },
+        {
+          "t": "hold",
+          "ms": 1200
+        },
+        {
+          "t": "cmove",
+          "x": 950,
+          "y": 471
+        },
+        {
+          "t": "hold",
+          "ms": 1200
+        },
+        {
+          "t": "wheel",
+          "dy": 500
+        },
+        {
+          "t": "hold",
+          "ms": 800
+        },
+        {
+          "t": "hoverJs",
+          "find": "reconHistory"
+        },
+        {
+          "t": "hold",
+          "ms": 3200
+        },
+        {
+          "t": "wheel",
+          "dy": -500
+        },
+        {
+          "t": "hold",
+          "ms": 600
+        },
+        {
+          "t": "cmove",
+          "x": 548,
+          "y": 28
+        },
+        {
+          "t": "hold",
+          "ms": 1400
+        }
+      ]
+    },
+    "6": {
+      "name": "journal",
+      "prep": [
+        {
+          "t": "goto",
+          "url": "https://tape.up.railway.app/reconcile/"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 548,
+          "y": 28
+        }
+      ],
+      "actions": [
+        {
+          "t": "cmove",
+          "x": 635,
+          "y": 28
+        },
+        {
+          "t": "navClick",
+          "label": "Journal"
+        },
+        {
+          "t": "waitText",
+          "re": "grades its own closed trades"
+        },
+        {
+          "t": "hold",
+          "ms": 1000
+        },
+        {
+          "t": "hoverJs",
+          "find": "lessonT2179"
+        },
+        {
+          "t": "hold",
+          "ms": 1600
+        },
+        {
+          "t": "hoverJs",
+          "find": "lessonT3113"
+        },
+        {
+          "t": "hold",
+          "ms": 1200
+        },
+        {
+          "t": "hoverJs",
+          "find": "lessonT0815"
+        },
+        {
+          "t": "hold",
+          "ms": 1800
+        },
+        {
+          "t": "cmove",
+          "x": 855,
+          "y": 930
+        },
+        {
+          "t": "hold",
+          "ms": 600
+        },
+        {
+          "t": "cmove",
+          "x": 635,
+          "y": 28
+        },
+        {
+          "t": "hold",
+          "ms": 300
+        }
+      ]
+    },
+    "7": {
+      "name": "receipts-close",
+      "prep": [
+        {
+          "t": "goto",
+          "url": "https://tape.up.railway.app/journal/"
+        },
+        {
+          "t": "hold",
+          "ms": 1500
+        },
+        {
+          "t": "cmove",
+          "x": 635,
+          "y": 28
+        }
+      ],
+      "actions": [
+        {
+          "t": "cmove",
+          "x": 717,
+          "y": 28
+        },
+        {
+          "t": "navClick",
+          "label": "Receipts"
+        },
+        {
+          "t": "waitText",
+          "re": "Newest on the tape"
+        },
+        {
+          "t": "hold",
+          "ms": 800
+        },
+        {
+          "t": "hoverJs",
+          "find": "lookupInput"
+        },
+        {
+          "t": "hold",
+          "ms": 500
+        },
+        {
+          "t": "hoverJs",
+          "find": "receiptRow"
+        },
+        {
+          "t": "hold",
+          "ms": 1000
+        },
+        {
+          "t": "wheel",
+          "dy": 800
+        },
+        {
+          "t": "hold",
+          "ms": 400
+        },
+        {
+          "t": "hoverJs",
+          "find": "footerBlotter"
+        },
+        {
+          "t": "hold",
+          "ms": 1100
+        },
+        {
+          "t": "hoverJs",
+          "find": "footerGithub"
+        },
+        {
+          "t": "hold",
+          "ms": 900
+        },
+        {
+          "t": "hoverJs",
+          "find": "footerAlpaca"
+        },
+        {
+          "t": "hold",
+          "ms": 1100
+        },
+        {
+          "t": "cmove",
+          "x": 700,
+          "y": 700
+        },
+        {
+          "t": "hold",
+          "ms": 900
+        }
+      ]
+    }
+  }
+}
