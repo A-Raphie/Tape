@@ -1,0 +1,1 @@
+{"serial": 817, "ts": "2026-09-01T15:36:21+00:00", "kind": "trade_opened", "tool": null, "payload": {"trade": "T-0815", "order_ids": ["cc241ae4-92a3-462f-a15e-22e23558038a"], "qty": 32}, "ok": 1, "latency_ms": null}

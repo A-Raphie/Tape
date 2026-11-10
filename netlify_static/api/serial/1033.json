@@ -1,0 +1,1 @@
+{"serial": 1033, "ts": "2026-09-01T15:51:32+00:00", "kind": "trade_opened", "tool": null, "payload": {"trade": "T-1031", "order_ids": ["05498e88-216f-4fb6-a2a6-a66d8d125eb1"], "qty": 32}, "ok": 1, "latency_ms": null}

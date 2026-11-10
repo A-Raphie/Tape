@@ -1,0 +1,1 @@
+{"serial": 10304, "ts": "2026-09-03T06:09:30+00:00", "kind": "state_repair", "tool": null, "payload": {"trade": "T-2179", "reason": "no position at reconcile: unfilled or removed"}, "ok": 1, "latency_ms": null}

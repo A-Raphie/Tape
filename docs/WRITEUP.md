@@ -1,6 +1,6 @@
 # Tape: write-up
 
-**Tape** is an autonomous options desk on Alpaca paper (`PA37YPE0PC51`) that prints a serial-numbered receipt for everything it does, then reconciles its own journal against the broker every cycle. Live at [tape.up.railway.app](https://tape.up.railway.app) · repo [github.com/A-Raphie/tape](https://github.com/A-Raphie/tape) · account `PA37YPE0PC51`.
+**Tape** is an autonomous options desk on Alpaca paper (`PA37YPE0PC51`) that prints a serial-numbered receipt for everything it does, then reconciles its own journal against the broker every cycle. Live at [tape.up.railway.app](https://tape-desk.netlify.app) · repo [github.com/A-Raphie/tape](https://github.com/A-Raphie/tape) · account `PA37YPE0PC51`.
 
 ## AI logic
 

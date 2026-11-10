@@ -1,0 +1,1 @@
+{"serial": 2066, "ts": "2026-09-01T17:22:55+00:00", "kind": "cycle_error", "tool": null, "payload": {"error": "McpError(\"get_all_positions tool error: Error calling tool 'get_all_positions': HTTP request timed out (ReadTimeout)\")"}, "ok": 0, "latency_ms": null}

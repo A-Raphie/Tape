@@ -1,0 +1,1 @@
+{"serial": 10021, "ts": "2026-09-02T21:01:35+00:00", "kind": "trade_closed", "tool": null, "payload": {"trade": "T-3595", "reason": "tp_hit: cost -0.01 <= tp 0.125", "realized": 858.0}, "ok": 1, "latency_ms": null}

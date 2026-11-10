@@ -1,0 +1,1 @@
+{"serial": 2045, "ts": "2026-09-01T17:12:07+00:00", "kind": "mcp_call", "tool": "get_option_snapshot", "payload": {"tool": "get_option_snapshot", "arguments": {"symbols": "QQQ260901C00723000"}, "result": "Error calling tool 'get_option_snapshot': Request error (ReadError): "}, "ok": 0, "latency_ms": 174682}

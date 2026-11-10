@@ -3,7 +3,7 @@ import "./globals.css";
 import { TopBar, Footer } from "./shell";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tape.up.railway.app"),
+  metadataBase: new URL("https://tape-desk.netlify.app"),
   title: {
     default: "Tape: the proof-carrying options desk",
     template: "%s · Tape",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: "Tape: the proof-carrying options desk",
     description:
       "Every order the agent places ships a serial-numbered receipt, and a reconcile pass proves the journal matches the account.",
-    url: "https://tape.up.railway.app",
+    url: "https://tape-desk.netlify.app",
     siteName: "Tape",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
     type: "website",

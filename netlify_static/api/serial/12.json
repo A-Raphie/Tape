@@ -1,0 +1,1 @@
+{"serial": 12, "ts": "2026-09-01T14:08:32+00:00", "kind": "mcp_call", "tool": "get_open_position", "payload": {"tool": "get_open_position", "arguments": {"symbol_or_asset_id": "SPY260901P00757000"}, "result": "Error calling tool 'get_open_position': HTTP error 404: Not Found - {'code': 40410000, 'message': 'position does not exist'}"}, "ok": 0, "latency_ms": 261}

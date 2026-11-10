@@ -1,0 +1,1 @@
+{"serial": 2090, "ts": "2026-09-01T17:27:54+00:00", "kind": "trade_closed", "tool": null, "payload": {"trade": "T-0448", "reason": "sl_hit: cost 0.38 >= sl 0.375", "realized": -429.0}, "ok": 1, "latency_ms": null}

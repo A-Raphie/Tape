@@ -13,3 +13,6 @@ out/
 # local key files, never tracked
 .env.dev
 agent/.env.dev
+
+# Local Netlify folder
+.netlify

@@ -6,17 +6,17 @@ An autonomous options agent on Alpaca paper that prints a serial-numbered receip
 
 | | |
 |---|---|
-| Live desk | [tape.up.railway.app](https://tape.up.railway.app) |
+| Live desk | [tape-desk.netlify.app](https://tape-desk.netlify.app) (static archive of the desk journal) |
 | Demo video | [demo-take/tape-demo-v6.mp4](demo-take/tape-demo-v6.mp4) (2:46, the real desk, real receipts) |
 | Paper account | `PA37YPE0PC51` (Alpaca paper, $100,000 start) |
 | Stack | Python agent · Alpaca MCP server · Groq · FastAPI · Next.js 15 |
 
 ## Judge it in 90 seconds
 
-1. Open the [live desk](https://tape.up.railway.app): equity tile is the real Alpaca paper account, ticking. The front page shows losses in red next to wins.
-2. Click any row on the [desk blotter](https://tape.up.railway.app/desk/): the receipt unfolds. What happened, the analyst's reasoning, the trade in English, cash collected, worst case, and the 13 gates it passed to exist.
-3. Open [Rules](https://tape.up.railway.app/rules/): every gate evaluation on record, including the 22 blocked proposals and the exact gate that killed each one.
-4. Open [Reconcile](https://tape.up.railway.app/reconcile/): every cycle the journal is compared against the broker's actual positions. The clean stamps are the product.
+1. Open the [live desk](https://tape-desk.netlify.app): equity tile is the real Alpaca paper account, ticking. The front page shows losses in red next to wins.
+2. Click any row on the [desk blotter](https://tape-desk.netlify.app/desk/): the receipt unfolds. What happened, the analyst's reasoning, the trade in English, cash collected, worst case, and the 13 gates it passed to exist.
+3. Open [Rules](https://tape-desk.netlify.app/rules/): every gate evaluation on record, including the 22 blocked proposals and the exact gate that killed each one.
+4. Open [Reconcile](https://tape-desk.netlify.app/reconcile/): every cycle the journal is compared against the broker's actual positions. The clean stamps are the product.
 
 ## The proof, in numbers
 
@@ -24,12 +24,12 @@ Live counts, pulled from the running desk at write time. Every one of these is c
 
 | What | Count | Verify |
 |---|---|---|
-| Serial-numbered receipts | 19,849+ | [Receipts](https://tape.up.railway.app/receipts/), every one lookup-able by number |
+| Serial-numbered receipts | 19,849+ | [Receipts](https://tape-desk.netlify.app/receipts/), every one lookup-able by number |
 | Journaled MCP calls | 15,138 | Home tile, raw payloads preserved |
-| Gate evaluations | 33 runs · 11 approved · 22 blocked | [Rules](https://tape.up.railway.app/rules/) |
-| Reconcile passes | clean, every cycle | [Reconcile](https://tape.up.railway.app/reconcile/) |
-| Self-graded lessons | 10 | [Journal](https://tape.up.railway.app/journal/) |
-| Closed spreads (fresh account) | 11 closed · +$447.50 realized | [Desk](https://tape.up.railway.app/desk/) and `/api/trades` |
+| Gate evaluations | 33 runs · 11 approved · 22 blocked | [Rules](https://tape-desk.netlify.app/rules/) |
+| Reconcile passes | clean, every cycle | [Reconcile](https://tape-desk.netlify.app/reconcile/) |
+| Self-graded lessons | 10 | [Journal](https://tape-desk.netlify.app/journal/) |
+| Closed spreads (fresh account) | 11 closed · +$447.50 realized | [Desk](https://tape-desk.netlify.app/desk/) and `/api/trades` |
 
 ## The account
 

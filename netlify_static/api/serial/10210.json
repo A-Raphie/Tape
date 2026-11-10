@@ -1,0 +1,1 @@
+{"serial": 10210, "ts": "2026-09-02T21:22:23+00:00", "kind": "reconcile", "tool": null, "payload": {"clean": false, "diffs": [{"type": "receipt_without_position", "symbol": "SPY260902C00765000"}, {"type": "receipt_without_position", "symbol": "SPY260902C00766000"}]}, "ok": 0, "latency_ms": null}

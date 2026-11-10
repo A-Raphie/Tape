@@ -1,0 +1,8 @@
+/api/state /api/state.json 200
+/api/equity /api/equity.json 200
+/api/receipts /api/receipts.json 200
+/api/trades /api/trades.json 200
+/api/gate_evals /api/gate_evals.json 200
+/api/reconcile /api/reconcile.json 200
+/api/lessons /api/lessons.json 200
+/api/serial/* /api/serial/:splat.json 200

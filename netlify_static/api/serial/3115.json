@@ -1,0 +1,1 @@
+{"serial": 3115, "ts": "2026-09-01T18:48:47+00:00", "kind": "trade_opened", "tool": null, "payload": {"trade": "T-3113", "order_ids": ["5c1fe363-a73b-402e-b442-7d3a30af34de"], "qty": 36}, "ok": 1, "latency_ms": null}

@@ -1,0 +1,1 @@
+{"serial": 2181, "ts": "2026-09-01T17:47:16+00:00", "kind": "trade_opened", "tool": null, "payload": {"trade": "T-2179", "order_ids": ["2be5dbad-96ec-4bfc-a308-046c1196be8e"], "qty": 33}, "ok": 1, "latency_ms": null}

@@ -1,0 +1,1 @@
+{"serial": 318, "ts": "2026-09-01T15:02:58+00:00", "kind": "llm_judgment", "tool": null, "payload": {"model": "openai/gpt-oss-120b", "system": "Reply with JSON only.", "user": "Confirm alive as {\"ok\": true}", "output": "{\"ok\":true}"}, "ok": 1, "latency_ms": 1036}

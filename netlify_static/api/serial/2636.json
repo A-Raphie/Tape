@@ -1,0 +1,1 @@
+{"serial": 2636, "ts": "2026-09-01T18:19:11+00:00", "kind": "mcp_call", "tool": "get_account_info", "payload": {"tool": "get_account_info", "arguments": {}, "result": "Error calling tool 'get_account_info': HTTP request timed out (ConnectTimeout)"}, "ok": 0, "latency_ms": 30684}

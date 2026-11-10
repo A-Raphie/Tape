@@ -1,0 +1,1 @@
+{"serial": 3012, "ts": "2026-09-01T18:46:12+00:00", "kind": "trade_closed", "tool": null, "payload": {"trade": "T-1700", "reason": "tp_hit: cost 0.13 <= tp 0.145", "realized": 543.9999999999999}, "ok": 1, "latency_ms": null}

@@ -1,0 +1,1 @@
+{"serial": 2394, "ts": "2026-09-01T18:02:25+00:00", "kind": "trade_opened", "tool": null, "payload": {"trade": "T-2392", "order_ids": [], "qty": 31}, "ok": 1, "latency_ms": null}

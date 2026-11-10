@@ -1,0 +1,1 @@
+{"serial": 450, "ts": "2026-09-01T15:05:16+00:00", "kind": "trade_opened", "tool": null, "payload": {"trade": "T-0448", "order_ids": ["35329021-7446-4bf9-9329-7379f8da4601"], "qty": 33}, "ok": 1, "latency_ms": null}
